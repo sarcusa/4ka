@@ -4,6 +4,11 @@
 # Excursion events are defined as two consecutive values within the event window that
 # are more extreme than the avg +/- X std of the reference windows.
 
+library(lipdR)
+library(tidyverse)
+
+load('TS_climateInterp.RData') # Load in the TS structure of all paleoclimate data
+
 ## --- SET PARAMETERS DEFINING THE ANALYSIS WINDOW AND EVENTS --- ##
 
 event_yr = 4200     # Set the event year
@@ -25,8 +30,6 @@ event_end = event_yr + event_window / 2
 
 # UPDATE THIS SECTION AFTER FIGURING OUT HOW TO INTEGRATE LiPD FILES - THIS MAY GO INSIDE THE FOR LOOP
 
-# 1. Check that there is a climate interpretation
-
 # 2. Check that there are data points in event window and both reference windows
 
 # 3. Calculate median resolution, check that this meets resolution criteria
@@ -34,18 +37,14 @@ event_end = event_yr + event_window / 2
 # 4. Save all data and fields: 
 #         loc, site name, proxy type, archive type, resolution, units, variable name, ages, values
 
-# FOR NOW ASSUME:
-# ages = list of length(records that match crtieria) containing ages
-# values = list of length(records that match crtieria) containing paleo data values
-
-status = rep(0, length(ages)) # store whether the record is used (1) or not (0) in analysis 
-for (i in 1:length(ages)) {
+status = rep(0, length(TS)) # store whether the record is used (1) or not (0) in analysis 
+for (i in 1:length(TS)) {
 	
-	age = ages[[i]]
-	vals = values[[i]]
+  age = TS[[i]]$age
+  vals = TS[[i]]$paleoData_values
 	
-	# MIGHT DO ALL THIS PROCESSING IN DIFFERENT FILE, SAME STEP AS EXTRACTING FROM ALL LiPD FILES
-	# Setting all missing values to NA
+  # MIGHT DO ALL THIS PROCESSING IN DIFFERENT FILE, SAME STEP AS EXTRACTING FROM ALL LiPD FILES
+  # Setting all missing values to NA
   age[age == "NaN"] = NA
   vals[vals == "NaN"] = NA
   age[!is.finite(age)] = NA
@@ -95,6 +94,5 @@ for (i in 1:length(ages)) {
   inds = which(!is.na(age))
   age = age[inds]
   vals = vals[inds]
-
 	
-}	
+} # end loop thru TS structure	
