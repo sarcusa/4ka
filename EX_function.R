@@ -1,5 +1,5 @@
-EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
-                  resCriteria = 50, sigNum = 2, datNam = '', varNam = '',
+EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F, figDir = '',
+                  resCriteria = 50, sigNum = 2, datNam = '', varNam = '', lat = NA, lon = NA, 
                   units = '', proxy = '') {
   ## Written by Hannah Kolus, 09/04/2018 
   ## Determines whether an excursion event has occurred within the specified event window.
@@ -21,12 +21,14 @@ EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
   
   statusEX = 1      # store whether record was used in analysis or filtered
   eventEX = FALSE   # store event occurrence
+  dirEX = 0         # store direction of excursion
+  onsetEX = NA      # store onset age of excursion
   
   if (class(vals) != 'numeric' & class(vals) != 'integer') {
     print('NON-NUMERIC DATA')
     print(paste('DATA IS OF CLASS:', class(vals)))
     statusEX = 0
-    return(list(statusEX, eventEX))
+    return(list(statusEX, eventEX, dirEX, onsetEX))
   }
   
   # Calculate median resolution if there are data points in analysis window
@@ -34,13 +36,13 @@ EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
     medRes = median(diff(age))
   } else {
     statusEX = 0
-    return(list(statusEX, eventEX))
+    return(list(statusEX, eventEX, dirEX, onsetEX))
   }
   
-  # Skip record if resolution doesn't meet crtieria
+  # Skip record if resolution doesn't meet criteria
   if (medRes > resCriteria) {
     statusEX = 0
-    return(list(statusEX, eventEX))
+    return(list(statusEX, eventEX, dirEX, onsetEX))
   }
   
   pre_i = which(age < event_start)                        # define pre-event (ref) window indices
@@ -48,9 +50,9 @@ EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
   post_i = which(age > event_end)                         # define post-event (ref) window indices
   
   # Skip records that don't contain enough data points to perform statistics
-  if (length(event_i) < 3 | length(post_i) <= length(event_i)/2 | length(pre_i) <= length(event_i)/2) {
+  if (length(event_i) < 5 | length(post_i) <= length(event_i)/2 | length(pre_i) <= length(event_i)/2) {
     statusEX = 0
-    return(list(statusEX, eventEX))
+    return(list(statusEX, eventEX, dirEX, onsetEX))
   }
   ## ------------------------------ END RECORD FILTERING ------------------------------ ##
   
@@ -93,13 +95,59 @@ EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
   belowPts = which(values[event_i] < avg_lo - sigNum * sd_lo)
   
   # Determine whether there are any consecutive extreme points - this qualifies an event
-  if (any(diff(abovePts) == 1) | any(diff(belowPts) == 1)) {
-    eventEX = TRUE
+  if (medRes >= 10) {
+    if (any(diff(abovePts) == 1) | any(diff(belowPts) == 1)) {
+      eventEX = TRUE
+      
+      # Check direction
+      indsA = which(diff(abovePts) == 1)
+      indsB = which(diff(belowPts) == 1)
+      
+      if (length(indsA) > 0 && length(indsB) > 0) {
+        diffA = max(values[event_i[abovePts[c(indsA, indsA+1)]]] - (avg_hi + sigNum * sd_hi))
+        diffB = max((avg_lo - sigNum * sd_lo) - values[event_i[belowPts[c(indsB, indsB+1)]]])
+        dirEX = ifelse(diffA > diffB, 1, -1)
+      } else {
+        dirEX = ifelse(length(indsA) > 0, 1, -1)
+      }
+      
+      # find event onset
+      onsetEX = ifelse(dirEX == 1, age[event_i[abovePts[indsA[length(indsA)]+1]]], age[event_i[belowPts[indsB[length(indsB)]+1]]])
+      
+    }
+  } else {
+    if (any(diff(diff(abovePts)) == 0) | any(diff(diff(belowPts)) == 0)) {
+      eventEX = TRUE
+      
+      # Check direction
+      indsA = which(diff(diff(abovePts)) == 0)
+      indsB = which(diff(diff(belowPts)) == 0)
+      
+      if (length(indsA) > 0 && length(indsB) > 0) {
+        diffA = max(values[event_i[abovePts[c(indsA, indsA+1, indsA+2)]]] - (avg_hi + sigNum * sd_hi))
+        diffB = max((avg_lo - sigNum * sd_lo) - values[event_i[belowPts[c(indsB, indsB+1, indsB+2)]]])
+        dirEX = ifelse(diffA > diffB, 1, -1)
+      } else {
+        dirEX = ifelse(length(indsA) > 0, 1, -1)
+      }
+      
+      # find event onset
+      onsetEX = ifelse(dirEX == 1, age[event_i[abovePts[indsA[length(indsA)]+2]]], age[event_i[belowPts[indsB[length(indsB)]+2]]])
+    }
   }
   
   if (plotOpt) {
     
-    ggplot() + geom_point(aes(x = age, y = values)) + geom_line(aes(x = age, y = values)) +
+    varNam = gsub('/','_',varNam)
+    varNam = gsub(',','_',varNam)
+    datNam = gsub('/','_',datNam)
+    datNam = gsub(',','_',datNam)
+    dirStr = ifelse(dirEX == 0, 'NA', ifelse(dirEX == 1, 'positive', 'negative'))
+    lat = as.numeric(lat)
+    lon = as.numeric(lon)
+    pdf(file.path(figDir, paste0(datNam, '_', varNam, '_', eventEX, '_', dirStr, '.pdf')))
+    
+    p1 = ggplot() + geom_point(aes(x = age, y = values)) + geom_line(aes(x = age, y = values)) +
       geom_line(aes(x = age[pre_i], y = rep(preAVG, length(pre_i))), linetype = 1) +
       geom_line(aes(x = age[post_i], y = rep(postAVG, length(post_i))), linetype = 1) +
       geom_line(aes(x = age[pre_i], y = rep(preAVG + sigNum * preSD, length(pre_i))), color = 'red', linetype = 4) +
@@ -109,15 +157,22 @@ EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F,
       ylab(paste0(proxy, ':\n', varNam, ' (', units, ')')) +
       xlab('yr BP') + ggtitle(paste0(datNam))
     
-    varNam = gsub('/','_',varNam)
-    varNam = gsub(',','_',varNam)
-    datNam = gsub('/','_',datNam)
-    datNam = gsub(',','_',datNam)
+    latLims = ifelse(c(lat >= 0,lat >= 0), c(0,90), c(-90,0))
     
-    ggsave(paste0(figDir, datNam, '_', varNam, '_', eventEX, '.png'))
+    colStr = ifelse(eventEX == T, ifelse(dirEX == 1, 'red', 'blue'), 'gray50')
+    p2 = ggplot() + borders("world", colour = "black") + 
+      geom_point(aes(x = lon, y = lat), color = 'lightgoldenrod1', size = 5) +
+      geom_point(aes(x = lon, y = lat), color=colStr, size = 4) +
+      theme_bw() + xlab('Longitude') + ylab('Latitude') +
+      xlim(-180, 180) + ylim(latLims)
+    
+    grid.arrange(p1, p2, nrow = 2)
+    
+    dev.off()
+    #ggsave(file.path(figDir, paste0(datNam, '_', varNam, '_', eventEX, '_', dirStr, '.pdf')))
     
   }
   
-  return(list(statusEX, eventEX))
+  return(list(statusEX, eventEX, dirEX, onsetEX))
   
 }

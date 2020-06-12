@@ -1,4 +1,4 @@
-MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt = F, datNam = '', varNam = '') {
+MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt = F, figDir = '', datNam = '', varNam = '') {
  ## Written by Hannah Kolus, 09/04/2018 
  ## Searches for mean shifts in the specified record, using the changepoint package function cpt.mean().
  ## In addition, tests for significant differences in means from the results of cpt.mean(), with the 
@@ -21,7 +21,7 @@ MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt
   # If record contains no break points, move to next record
   if (length(resInds) == 0 || (length(resInds) == 1 && resInds == length(X))) {
     print('NO BREAKPOINTS')
-    return(NA)
+    return(list(sig_brks = NA, brk_dirs = NA))
   }
   
   # Delete change points detected at very end of record
@@ -64,8 +64,19 @@ MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt
   # Store significant breaks in TS_MS
   if (!any(pvals < alpha)) {
     sig_brks = NA
+    brk_dirs = NA
   } else {
     sig_brks = breaks[pvals < alpha]
+    
+    # Calculate mean over significant segments
+    sigBounds = c(X[1], sig_brks, X[length(X)])
+    sigBounds = sigBounds[!is.na(sigBounds)]
+    origMean = rep(0, length(sigBounds) - 1)
+    for (it in 1:length(origMean)) {
+      origMean[it] = mean(vals[which(age >= sigBounds[it] & age <= sigBounds[it+1])])
+    }
+    
+    brk_dirs = ifelse(diff(origMean) < 0, 1, -1)
   }
 
   ## ------------------------------ PLOTTING ------------------------------ ##
@@ -84,17 +95,19 @@ MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt
     # Remove troublesome characters for file saving
     varNam = gsub('/','_',varNam)
     varNam = gsub(',','_',varNam)
+    varNam = gsub('%','_',varNam)
     datNam = gsub('/','_',datNam)
     datNam = gsub(',','_',datNam)
     
     # plot each original and interpolated series with change points and segment means
-    pdf(paste0(figDir, datNam, '_', varNam, '_', reduceBreaks, '.pdf'))
+    pdf(file.path(figDir, paste0(datNam, '_', varNam, '_', reduceBreaks, '.pdf')))
     par(mfrow = c(2,1))
     plot(X, Y, type = 'o', xlab="Age (BP)", ylab = "Values")
     abline(v = sig_brks, col="blue", lwd = 2)
     for (p in 1:(length(sigBounds) - 1)) {
       segments(sigBounds[p], interpMean[p], sigBounds[p+1], interpMean[p], col = 'red', lwd = 2)
     }
+    text(sig_brks[1], ifelse(max(vals) < 0, max(vals)*1.1, max(vals)/1.1), ifelse(brk_dirs[1] == 1, 'pos', 'neg'))
     title(paste0(datNam, ':\nInterpolated Data'))
     
     plot(age, vals, type = 'o', xlab="Age (BP)", ylab = "Values")
@@ -102,11 +115,12 @@ MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt
     for (p in 1:(length(sigBounds) - 1)) {
       segments(sigBounds[p], origMean[p], sigBounds[p+1], origMean[p], col = 'red', lwd = 2)
     }
+    text(sig_brks[1], ifelse(max(vals) < 0, max(vals)*1.1, max(vals)/1.1), ifelse(brk_dirs[1] == 1, 'pos', 'neg'))
     title('Original Data')
     dev.off()
   } # end plotting
   
-  return(sig_brks)
+  return(list(sig_brks = sig_brks, brk_dirs = brk_dirs))
   
 } # end function
 

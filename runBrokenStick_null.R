@@ -8,7 +8,7 @@ library(lipdR)
 setwd('/Users/hannah/Documents/Arctic Group/Proxy analysis/forGitHub/4ka')
 source('gaussianize.R')
 source('brokenStick.R')
-load('BS_results.RData')
+load('BS_results_newLiPD.RData')
 
 numIt = 1000
 
@@ -32,7 +32,7 @@ for (i in 1:length(TS_BS)) {
   
 } # end loop thru records
 
-save(TS_BS, file = 'BS_results_plusNull_1_9.RData')
+save(TS_BS, file = 'BS_results_plusNull_newLiPD.RData')
 
 ## ---------------------- HISTOGRAM PLOT ---------------------- ##
 

@@ -1,4 +1,4 @@
-iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level=.90,plot.opt=FALSE,plotName=''){
+iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level=.90,plot.opt=FALSE,plotName='',figDir=''){
   #pt is a single, paleoTimeseries object
   ## Written by Nick McKay, part of the GeoChronR package
   
@@ -133,7 +133,7 @@ iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level
   
   if(plot.opt){
     #x11()
-    png(filename = paste0('brokenStickFigs/', plotName, '_', event, '.png'))
+    png(filename = file.path(figDir, paste0(plotName, '_', event, '.png')))
     plot(dati,xlab="Age (BP)",ylab = "Values")
     title(plotName)
     if(!no.cp){
@@ -144,5 +144,5 @@ iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level
     dev.off()
   }
   
-return(list(cp=cp,cp.se=cp.se,cp.y = cp.y))
+return(list(cp=cp,cp.se=cp.se,cp.y = cp.y, o = o))
 }
