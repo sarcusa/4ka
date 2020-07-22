@@ -6,7 +6,7 @@ spatialBrokenStick <- function(data_in,param, climateVar){
   
   eventYrs = param$eventYrs
   
-  TS_BS_orig = data_in
+  TS_BS_orig = data_in[[1]]
   
   for (y in 1:length(eventYrs)) {
     
