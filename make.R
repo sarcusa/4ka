@@ -14,8 +14,10 @@ source('plan_plotting.R')
 source('plan_var.R') #, local = envir
 
 file.exists("report.Rmd")
+
 #drake_hpc_template_file("slurm_batchtools.tmpl")
-#future::plan(batchtools_slurm, template = "slurm_batchtools.tmpl")
+#future::plan(list(batchtools_slurm,multiprocess), template = "slurm_batchtools.tmpl")
+future::plan(batchtools_slurm, template = "/home/sha59/4ka/slurm_batchtools.tmpl")
 
 # Download necessary data
 set.seed(1)
@@ -41,4 +43,5 @@ print("TS extracted")
 #vis_drake_graph(plan)
 # plot(plan)
 
-make(my_plan, lock_envir = FALSE, lock_cache = FALSE)
+make(my_plan, lock_envir = FALSE, lock_cache = FALSE, 
+     parallelism = "future")
