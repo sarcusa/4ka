@@ -1,6 +1,4 @@
-EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F, figDir = '',
-                  resCriteria = 50, sigNum = 2, datNam = '', varNam = '', lat = NA, lon = NA, 
-                  units = '', proxy = '') {
+EX_fun = function(age, vals, event_yr, event_window, ref_window, plotOpt = F, figDir = '',resCriteria = 50, sigNum = 2, datNam = '', varNam = '', lat = NA, lon = NA,units = '', proxy = '') {
   ## Written by Hannah Kolus, 09/04/2018 
   ## Determines whether an excursion event has occurred within the specified event window.
   ## Excursion events are defined as two consecutive values within the event window that
