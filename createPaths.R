@@ -1,6 +1,6 @@
 createPaths = function() {
   
-  mainDir = '/Users/hannah/Dropbox/2019'
+  mainDir = dir
   
   dir.create(mainDir)
   dir.create(file.path(mainDir, 'excursion'))
