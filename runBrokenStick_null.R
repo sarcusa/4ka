@@ -1,6 +1,6 @@
 BrokenStick_null <- function(data_in, param){
   
-  TS_BS <- data_in
+  TS_BS <- data_in[[1]]
   
   for (i in 1:length(TS_BS)) {
     
