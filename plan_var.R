@@ -17,16 +17,19 @@ my_plan <- drake_plan(
   analysis_1 = target(Excursion(input_data = data,input_param = parameters,
                          input_var = climate_var),
                                          transform = cross(
-                                           climate_var = c("M", "T", "all"))),
+                                           climate_var = c("M", "T", "all")),
+                      resources = list(ncpus = 1)),
   
   
   analysis_2 = target(MeanShift(input_data = data, input_param = parameters,
                          input_var = climate_var),
-                      transform = cross(climate_var = c("M", "T", "all"))),
+                      transform = cross(climate_var = c("M", "T", "all")),
+                      resources = list(ncpus = 1)),
   
   analysis_3 = target(TrendChanges(input_data = data,input_param = parameters,
                             input_var = climate_var), 
-                      transform = cross(climate_var = c("M", "T", "all"))),
+                      transform = cross(climate_var = c("M", "T", "all")),
+                      resources = list(ncpus = 4)),
   
   results_1 = target(Plotting(analysis1 = analysis_1, analysis2 = analysis_2,
                               analysis3 = analysis_3, 
