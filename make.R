@@ -1,4 +1,4 @@
-dir = '/home/sha59/4ka'
+dir = "/home/sha59/4ka"
 setwd(dir)
 
 #envir <- new.env(parent = globalenv())
@@ -13,7 +13,7 @@ source('plan_trendchanges.R')
 source('plan_plotting.R')
 source('plan_var.R') #, local = envir
 
-file.exists("report.Rmd")
+#file.exists("report.Rmd")
 
 #drake_hpc_template_file("slurm_batchtools.tmpl")
 #future::plan(list(batchtools_slurm,multiprocess), template = "slurm_batchtools.tmpl")
