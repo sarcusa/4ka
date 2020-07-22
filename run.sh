@@ -4,7 +4,6 @@
 #SBATCH --output="/home/sha59/4ka.out"
 #SBATCH -n 64
 #SBATCH --time=1000:00
-#SBATCH --cpus-per-task=1 
 #SBATCH --mem=64000
 #SBATCH --mail-type=ALL
 
