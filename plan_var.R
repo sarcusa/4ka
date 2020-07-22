@@ -18,18 +18,18 @@ my_plan <- drake_plan(
                          input_var = climate_var),
                                          transform = cross(
                                            climate_var = c("M", "T", "all")),
-                      resources = list(ncpus = 1)),
+                      resources = list(cores = 2)),
   
   
   analysis_2 = target(MeanShift(input_data = data, input_param = parameters,
                          input_var = climate_var),
                       transform = cross(climate_var = c("M", "T", "all")),
-                      resources = list(ncpus = 1)),
+                      resources = list(cores = 2)),
   
   analysis_3 = target(TrendChanges(input_data = data,input_param = parameters,
                             input_var = climate_var), 
                       transform = cross(climate_var = c("M", "T", "all")),
-                      resources = list(ncpus = 4)),
+                      resources = list(cores = 6)),
   
   results_1 = target(Plotting(analysis1 = analysis_1, analysis2 = analysis_2,
                               analysis3 = analysis_3, 
