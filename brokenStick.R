@@ -46,10 +46,10 @@ iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level
     }
     if(any(is.na(psi.est))){
       
-      o<-try(segmented::segmented.lm(out.lm,seg.Z=~x,psi=list(x=NA),control=segmented::seg.control(it.max=1e3,stop.if.error=FALSE,n.boot=0,K=useK)))
+      o<-try(segmented::segmented.lm(out.lm,seg.Z=~x,psi=list(x=NA),control=segmented::seg.control(it.max=1e3,fix.npsi = FALSE,n.boot=0,K=useK)))
     }else{
       
-      o<-try(segmented::segmented(out.lm,seg.Z=~x,psi=psi.est,segmented::seg.control(it.max=1e3,stop.if.error=TRUE,n.boot=20)))
+      o<-try(segmented::segmented(out.lm,seg.Z=~x,psi=psi.est,segmented::seg.control(it.max=1e3,fix.npsi =TRUE,n.boot=20)))
     }
     
     if(all(grepl("lm",class(o))) | all(grepl("try-error",class(o)))){
