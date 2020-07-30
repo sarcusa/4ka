@@ -1,5 +1,7 @@
 BrokenStick <- function(data_in, param){
   
+  print("Running brockenStick now")
+  
   mainDir = createPaths()
   TS_BS = filterTs(data_in, 'useBS == 1')
   figDir = file.path(mainDir, 'broken_stick', 'individual')
@@ -29,11 +31,11 @@ BrokenStick <- function(data_in, param){
       TS_BS[[i]]$brk_ptsErr = results$cp.se[ordI]
       slopes = results$o$coefficients[3:(length(results$cp)+2)]
       TS_BS[[i]]$brk_dirs = ifelse(slopes > 0, 1, -1)
-    }}, error = function(e){cat("Error:", conditionMessage(e), paste0(" and had to skip record", i))})
+    }}, error = function(e){cat("Error:", conditionMessage(e), paste0(" and had to skip record ", TS_BS[[i]]$dataSetName))})
     
     
   }
-  
+    
   fileName = file.path(mainDir, 'RData', 'BS_results_complete.RData')
   save(TS_BS, file = fileName)
   
