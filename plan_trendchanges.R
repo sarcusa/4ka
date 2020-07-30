@@ -7,13 +7,6 @@ TrendChanges <- function(input_data, input_param, input_var){
     save(analysis_3a, file = datPath)
   }
   
-  #cl <- parallel::makeCluster(2L)
-  #print("calling workers")
-  #future::plan(cluster, workers = cl)
-  #analysis_3b = future({BrokenStick_null(analysis_3a[[1]], input_param)},
-  #                     lazy = TRUE)
-  #future::plan(sequential)
-  #print("going back to sequential")
   analysis_3b = BrokenStick_null(analysis_3a, input_param)
 
 
