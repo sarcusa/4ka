@@ -7,5 +7,7 @@
 #SBATCH --time=1000:00
 #SBATCH --mem=64000
 #SBATCH --cpus-per-task=<%= resources[["cores"]] %>
+##SBATCH --cpus-per-task=2
+##SBATCH -n 64
 
 Rscript -e 'batchtools::doJobCollection("<%= uri %>")'
