@@ -151,7 +151,12 @@ ProxyMap  <- function(data_MS, data_EX, param, climate_Var){
   
   pdf(file.path(figDir, 'moistureProxyMap_v1.pdf'))
   print(t)
-  dev.off()}, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
+  dev.off()
+  
+  #file.copy(from = file.path(figDir, 'moistureProxyMap_v1.pdf'),overwrite = T, 
+  #           to = file.path(param$mainDir,"report_files/figure-html/"))
+  
+  }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
   
   }
   
@@ -205,7 +210,12 @@ ProxyMap  <- function(data_MS, data_EX, param, climate_Var){
   
   pdf(file.path(figDir, 'temperatureProxyMap_v2.pdf'))
   print(t)
-  dev.off()}, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
+  dev.off()
+  
+  #file.copy(from = file.path(figDir, 'temperatureProxyMap_v2.pdf'),overwrite = T, 
+  #           to = file.path(param$mainDir,"report_files/figure-html/"))
+  
+  }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
   
   }
   
