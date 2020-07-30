@@ -43,3 +43,15 @@ loading <- function(dataset){
   file <- load(dataset)
   return(mget(file))
 }
+
+move_files  <- function(pathtofile1, pathtofile2, newpath){
+  
+  currentfiles = list(pathtofile1,pathtofile2)
+  newlocation = newpath
+  
+  for(i in 1:length(currentfiles)){
+  file.copy(from=currentfiles[[i]], to=newlocation, 
+            overwrite = TRUE, recursive = FALSE, 
+            copy.mode = TRUE)
+  }
+}
