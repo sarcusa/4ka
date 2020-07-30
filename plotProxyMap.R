@@ -95,7 +95,7 @@ ProxyMap  <- function(data_MS, data_EX, param, climate_Var){
   archives[which(archives == 'Midden')] = 'midden'
   archives[which(archives == 'Speleothem')] = 'speleothem'
   archives[which(archives == 'GlacierIce')] = 'ice'
-  #archives[which(archives == 'Ice-other')] = 'ice'
+  archives[which(archives == 'Ice-other')] = 'ice'
   
   lons = lons[which(!is.na(archives))]
   lats = lats[which(!is.na(archives))]
