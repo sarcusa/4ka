@@ -27,7 +27,7 @@ print("subset done")
 data_all  =  extractTs(data_sub)
 print("TS extracted")
 
-#vis_drake_graph(my_plan)
+#vis_drake_graph(my_plan, file = "dependency_graph.html")
 
 make(my_plan, lock_envir = FALSE, lock_cache = FALSE, 
-     parallelism = "future", jobs = 4)
+     parallelism = "future", jobs = 8)
