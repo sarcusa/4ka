@@ -4,7 +4,7 @@ BrokenStick_null <- function(data_in, param){
   
   TS_BS <- data_in[[1]]
   
-  registerDoParallel(cores = 4)
+  registerDoParallel(cores = 16)
   
   for (i in 1:length(TS_BS)) {
   
@@ -37,7 +37,7 @@ BrokenStick_null <- function(data_in, param){
     TS_BS[[i]]$null_brk_pts = lapply(cp.out, `[[`, 1)
     TS_BS[[i]]$null_brk_ptsErr = lapply(cp.out, `[[`, 2)
     
-  }
+  } #end of for loop
   save(TS_BS, file = 'BS_results_plusNull.RData')
   
   histBreaks = seq(100, 11500, by = 200)
