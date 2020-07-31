@@ -16,21 +16,24 @@ histEX <- function(data_in, param, climateVar){
   
   for (y in 1:length(param$eventYrs)) {
     
+    remove(data_EX)
     eventYr = param$eventYrs[y]
     print(paste('Year:', eventYr))
     
-    for (i in 1:length(data_in)) {
+    list2env(loading(file.path(dataDir, paste0('EX_results_plusNull_complete_', eventYr/1000, '.RData'))),envir=.GlobalEnv)
+    
+    for (i in 1:length(data_EX)) {
       
     # Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
-      if (length(data_in[[i]]$interpretation1_seasonalityGeneral) > 0) {
-        if (tolower(data_in[[i]]$interpretation1_seasonalityGeneral) == 'summer+' | 
-              tolower(data_in[[i]]$interpretation1_seasonalityGeneral) == 'winter+') {
-          data_in[[i]]$useEX = -1
-          print(data_in[[i]]$interpretation1_seasonalityGeneral)
+      if (length(data_EX[[i]]$interpretation1_seasonalityGeneral) > 0) {
+        if (tolower(data_EX[[i]]$interpretation1_seasonalityGeneral) == 'summer+' | 
+              tolower(data_EX[[i]]$interpretation1_seasonalityGeneral) == 'winter+') {
+          data_EX[[i]]$useEX = -1
+          print(data_EX[[i]]$interpretation1_seasonalityGeneral)
         }
       }
     }
-    TS = filterTs(data_in, 'useEX == 1')
+    TS = filterTs(data_EX, 'useEX == 1')
     
     # isolate only the records corresponding to the chosen climate interpretation
     interps = unlist(sapply(TS,"[[","interpretation1_variable"))
@@ -88,8 +91,8 @@ histEX <- function(data_in, param, climateVar){
     posNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == 1)) / length(inds)
     negNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == -1)) / length(inds)
     
-  }
-  
+  } # end event year loop
+   
   allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
   posNullQuants = apply(posNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
   negNullQuants = apply(negNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
