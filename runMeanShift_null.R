@@ -5,6 +5,7 @@ MeanShift_null <- function(data_in, param){
   data_MS <- data_in
   
   for (i in 1:length(data_MS)) {
+   
     
     print(paste0('RECORD ', i))
     
@@ -13,13 +14,13 @@ MeanShift_null <- function(data_in, param){
     
     synthDat = try(createSyntheticTimeseries(data_MS[[i]]$age, 
                                              data_MS[[i]]$paleoData_values, 
-                                             nens = numIt), silent = T)
+                                             nens = param$numIt), silent = T)
     
     if (class(synthDat) == "try-error") {
       print(paste('Try error, running instead with method = ML'))
       synthDat = try(synth_fun(data_MS[[i]]$age, 
                                data_MS[[i]]$paleoData_values, 
-                               nens = numIt))
+                               nens = param$numIt))
       
       if (class(synthDat) == "try-error") {
         print(paste('Try error again, skipping this record'))
@@ -28,14 +29,24 @@ MeanShift_null <- function(data_in, param){
       }
     }
     
+    registerDoParallel(cores = 16)
     # run the mean shift code for all iterations
-    for (it in 1:numIt) {
-      print(paste0('ITERATION ', it))
-      
-      output = MS_fun(data_MS[[i]]$age, synthDat[,it])
-      data_MS[[i]]$null_sig_brks[[it]] = output$sig_brks
-      data_MS[[i]]$null_brk_dirs[[it]] = output$brk_dirs
-    }
+    #for (it in 1:numIt) {
+    out <-foreach(it=1:param$numIt,
+                  .verbose=F,.errorhandling = "pass") %dopar% { 
+                    
+                    #print(paste0('ITERATION ', it))
+                    
+                    output = MS_fun(data_MS[[i]]$age, synthDat[,it])
+                    
+                    return(list(sig = output$sig_brks, brk = output$brk_dirs))
+                  }
+    stopImplicitCluster()
+    
+      #data_MS[[i]]$null_sig_brks[[it]] = output$sig_brks
+      #data_MS[[i]]$null_brk_dirs[[it]] = output$brk_dirs
+    data_MS[[i]]$null_sig_brks = lapply(out, `[[`, 1)
+    data_MS[[i]]$null_brk_dirs = lapply(out, `[[`, 2)
     
   }
   
