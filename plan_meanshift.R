@@ -7,7 +7,7 @@ MeanShift <- function(input_data,input_param, input_var){
     save(analysis_2a, file = datPath)
   }
   
-  analysis_2b = MeanShift_null(data_in = analysis_2a)
+  analysis_2b = MeanShift_null(data_in = analysis_2a, param = input_param)
   
   out_2b = {
     datPath = file.path(createPaths(), 'RData', 'MS_results_plusNull_complete.RData')
