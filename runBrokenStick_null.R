@@ -4,8 +4,6 @@ BrokenStick_null <- function(data_in, param){
   
   TS_BS <- data_in[[1]]
   
-  registerDoParallel(cores = 16)
-  
   for (i in 1:length(TS_BS)) {
   
     print(paste0('RECORD ', i))
@@ -23,8 +21,12 @@ BrokenStick_null <- function(data_in, param){
       TS_BS[[i]]$null_brk_ptsErr = rep(list(NA), param$numIt)
       
     }else{
+    
+      registerDoParallel(cores = 16)
+      
     cp.out <-foreach(it=1:param$numIt,
                      .verbose=TRUE,.errorhandling = "pass") %dopar% {
+                       
                        results = iterativeBrokenStick(TS_BS[[i]]$age, 
                                                       synthDat[,it], 
                                                       plot.opt = F)
