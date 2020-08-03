@@ -12,30 +12,42 @@ my_plan <- drake_plan(
                     mainDir = mainDir, numIt = numIt, 
                     res = res, radius = radius, 
                     eventWindow = eventWindow, 
-                    eventDetector = eventDetector), hpc = FALSE),
+                    eventDetector = eventDetector, ncores = ncores), hpc = FALSE),
   
-  analysis_1 = target(Excursion(input_data = data,input_param = parameters,
+  prep_1 = target(Excursion_prep(input_data = data,input_param = parameters),
+                  resources = list(cores = 4)),  
+  
+  analysis_1 = target(Excursion(input_data = prep_1,input_param = parameters,
                          input_var = climate_var),
-                                         transform = cross(
-                                           climate_var = c("M", "T", "all")),
-                      resources = list(cores = 4)),
+                      transform = cross(
+                        climate_var = c("T","M","all")),
+                      resources = list(cores = 1)),
   
+  prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
+                  resources = list(cores = 4)), 
   
-  analysis_2 = target(MeanShift(input_data = data, input_param = parameters,
+  analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
                          input_var = climate_var),
-                      transform = cross(climate_var = c("M", "T", "all")),
-                      resources = list(cores = 4)),
+                      transform = cross(climate_var = c("T","M","all")),
+                      resources = list(cores = 1)),
   
-  analysis_3 = target(TrendChanges(input_data = data,input_param = parameters,
+  prep_3 = target(TrendChanges_prep(input_data = data,input_param = parameters),
+                  resources = list(cores = 16)),
+  
+  analysis_3 = target(TrendChanges(input_data = prep_3,input_param = parameters,
                             input_var = climate_var), 
-                      transform = cross(climate_var = c("M", "T")),
-                      resources = list(cores = 16)),
+                      transform = cross(climate_var = c("T", "M")),
+                      resources = list(cores = 1)),
   
-  results_1 = target(Plotting(analysis1 = analysis_1, analysis2 = analysis_2,
-                              analysis3 = analysis_3, 
-                              input_param = parameters, input_var = climate_var),
+  results_1 = target(ProxyMap(prep1 = prep_1, prep2 = prep_2,
+                              param = parameters, input_var = climate_var),
+                     hpc = FALSE,
+                     transform = cross(climate_var = c("T", "M"))),
+  
+  results_2 = target(histogram_net(EX = analysis_1, MS = analysis_2, 
+                                   BS = analysis_3, param = parameters), 
                      transform = map(analysis_1, analysis_2, analysis_3),
-                     resources = list(cores = 1)),
+                     hpc = FALSE),
   
   report  = target(rmarkdown::render(
     knitr_in("report.Rmd"),
