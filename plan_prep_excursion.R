@@ -1,0 +1,20 @@
+Excursion_prep <- function(input_data,input_param){
+  
+    analysis_1a = applyEX(data_in = input_data, param = input_param)
+    
+    out1a = {
+      datPath = file.path(createPaths(), 'RData', 'Excursion.RData')
+      save(analysis_1a, file = datPath)
+    }
+    
+    analysis_1b = Excursion_null(data_in = analysis_1a, param = input_param)
+    
+    out1b = {
+      datPath = file.path(createPaths(), 'RData', 'Excursion_plusnull.RData')
+      save(analysis_1b, file = datPath)
+    }
+    
+    
+  return(analysis_1b)
+  
+}
