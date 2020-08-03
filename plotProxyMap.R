@@ -1,11 +1,11 @@
-ProxyMap  <- function(data_MS, data_EX, param, climate_Var){
+ProxyMap  <- function(prep1, prep2, param, input_var){
   
   datDir = file.path(createPaths(), 'RData')
   figDir = file.path(createPaths(), 'histograms')
   
-  climateVar = climate_Var
+  climateVar = input_var
   
-  TS_MS = data_MS
+  TS_MS = prep1
   
   # avoid double-counting sites if they have annual and seasonal records
   for (i in 1:length(TS_MS)) {
@@ -51,7 +51,7 @@ ProxyMap  <- function(data_MS, data_EX, param, climate_Var){
     
     eventYr = eventYrs[y]
     
-    TS = data_EX
+    TS = prep2
         
     # isolate only the records corresponding to the chosen climate interpretation
     interp = unlist(sapply(TS,"[[","interpretation1_variable"))
