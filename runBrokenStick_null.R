@@ -22,7 +22,7 @@ BrokenStick_null <- function(data_in, param){
       
     }else{
     
-      registerDoParallel(cores = 16)
+      registerDoParallel(cores = param$ncores)
       
     cp.out <-foreach(it=1:param$numIt,
                      .verbose=TRUE,.errorhandling = "pass") %dopar% {
