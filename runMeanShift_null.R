@@ -29,7 +29,7 @@ MeanShift_null <- function(data_in, param){
       }
     }
     
-    registerDoParallel(cores = 16)
+    registerDoParallel(cores = param$ncores)
     # run the mean shift code for all iterations
     #for (it in 1:numIt) {
     out <-foreach(it=1:param$numIt,
