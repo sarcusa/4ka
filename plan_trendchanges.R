@@ -1,26 +1,11 @@
 TrendChanges <- function(input_data, input_param, input_var){
   
-  analysis_3a = BrokenStick(input_data, input_param)
-  
-  out3a = {
-    datPath = file.path(createPaths(), 'RData', 'TrendChanges.RData')
-    save(analysis_3a, file = datPath)
-  }
-  
-  analysis_3b = BrokenStick_null(analysis_3a, input_param)
-
-
-  analysis_3c = spatialBrokenStick(analysis_3b, input_param, 
+  analysis_3c = spatialBrokenStick(input_data, input_param, 
                                    climateVar = input_var)
   
     
-  analysis_3d = hist_BS(data_in = analysis_3b, param = input_param,
+  analysis_3d = hist_BS(data_in = input_data, param = input_param,
                         climateVar = input_var)
-  
-  out_3b = {
-    datPath = file.path(createPaths(), 'RData', 'BS_results_plusNull_complete.RData')
-    save(analysis_3b, file = datPath)
-  }
   
   out3d = {
     datPath = file.path(createPaths(), 'RData', 'TrendChange_histogram.RData')
@@ -31,11 +16,8 @@ TrendChanges <- function(input_data, input_param, input_var){
                              climateVar = input_var)
     
   #output description
-  # analysis_3a[[2]] = histogram
-  # analysis_3b[[2]] = histogram
   # analysis_3e[[1]][[1]] = line plot
   # analysis_3e[[1]][[2]] = net histogram
-  output  <- list(analysis_3a[[2]], analysis_3b[[2]],
-                  analysis_3e[[1]][[1]], analysis_3e[[1]][[2]], analysis_3b[[1]], analysis_3d)
+  output  <- list(analysis_3e[[1]][[1]], analysis_3e[[1]][[2]], analysis_3d)
   return(output)
 }
