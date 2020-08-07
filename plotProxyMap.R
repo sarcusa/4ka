@@ -63,10 +63,10 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       inds_ex = which(interp == 'T' | interp == 'TM' | interp == 'M' | interp == 'P')
     }
     
-    lat = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[inds_ex])
-    lon = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[inds_ex])
-    name = unlist(sapply(TS_MS,"[[","dataSetName"))[inds_ex]
-    archive = unlist(sapply(TS_MS,"[[","archiveType"))[inds_ex]
+    lat = as.numeric(unlist(sapply(TS,"[[","geo_latitude"))[inds_ex])
+    lon = as.numeric(unlist(sapply(TS,"[[","geo_longitude"))[inds_ex])
+    name = unlist(sapply(TS,"[[","dataSetName"))[inds_ex]
+    archive = unlist(sapply(TS,"[[","archiveType"))[inds_ex]
     
     for (i in 1:length(TS)) {
       print(TS[[i]]$paleoData_proxy)
@@ -94,8 +94,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   archives[which(archives == 'Wood')] = 'wood'
   archives[which(archives == 'Midden')] = 'midden'
   archives[which(archives == 'Speleothem')] = 'speleothem'
-  archives[which(archives == 'GlacierIce')] = 'ice'
-  archives[which(archives == 'Ice-other')] = 'ice'
+  archives[which(archives == 'GlacierIce')] = 'glacier ice'
+  archives[which(archives == 'Ice-other')] = 'ice-other'
   
   lons = lons[which(!is.na(archives))]
   lats = lats[which(!is.na(archives))]
@@ -104,10 +104,11 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   
   df = data.frame(lats, lons, archives)
   col_m = c('#1c9099', '#08519c', '#810f7c', '#a63603', '#006d2c', '#c6dbef', '#f16913', '#74c476', '#8c96c6')
+  sh_m = c(seq(0,length(unique(archives))-1,1))
   
   a  <- ggplot() + borders("world", colour="black") + 
     geom_point(aes(x = lons, y = lats, fill = archives, shape = archives)) +
-    scale_fill_manual(values = col_m)
+    scale_shape_manual(values = sh_m)
   
   pdf(file.path(figDir, 'All_archives.pdf'))
   print(a)
@@ -123,27 +124,35 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   tryCatch({t  <- baseMap(c(-180,180), c(-90,90),map.type='line',
           global=T,projection='mollweide',restrict.map.range=F) + 
     geom_path(aes(x = boundcirc$x, y = sss)) +
-    geom_point(aes(x = lons[which(archives == 'lake sediment')],
-                   y = lats[which(archives == 'lake sediment')], 
-                   fill = 'lake sediment'), shape = 22, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'marine sediment')], 
-                   y = lats[which(archives == 'marine sediment')], 
-                   fill = 'marine sediment'),  shape = 21, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'speleothem')], 
-                   y = lats[which(archives == 'speleothem')], 
-                   fill = 'speleothem'), shape = 24, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'ice')], 
-                   y = lats[which(archives == 'ice')], fill = 'ice'),
-               shape = 21, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'peat')], 
-                   y = lats[which(archives == 'peat')], fill = 'peat'), 
-               shape =22, size = 3) +
-    scale_fill_manual(name = '', values = c('marine sediment' = col_m[1],
-                                            'lake sediment' = col_m[2],
-                                            'speleothem' = col_m[4],
-                                            'ice' = col_m[6],
-                                            'peat' = col_m[7]), 
-                     guide = guide_legend(override.aes = list(shape = c(21, 22, 21, 22, 24), fill = col_m[c(6,2,1,7,4)],color = rep('black',5)))) +
+      geom_point(aes(x = lons[which(archives == 'midden')], 
+                     y = lats[which(archives == 'midden')], 
+                     fill = 'midden'), shape = 23, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'marine sediment')], 
+                     y = lats[which(archives == 'marine sediment')], 
+                     fill = 'marine sediment'),  shape = 21, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'lake sediment')],
+                     y = lats[which(archives == 'lake sediment')], 
+                     fill = 'lake sediment'), shape = 22, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'speleothem')], 
+                     y = lats[which(archives == 'speleothem')], 
+                     fill = 'speleothem'), shape = 24, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'glacier ice')], 
+                     y = lats[which(archives == 'glacier ice')], 
+                     fill = 'glacier ice'), shape = 21, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'peat')], 
+                     y = lats[which(archives == 'peat')], 
+                     fill = 'peat'), shape =22, size = 4) +
+      geom_point(aes(x = lons[which(archives == 'wood')], 
+                     y = lats[which(archives == 'wood')], 
+                     fill = 'wood'), shape = 24, size = 4) +
+      scale_fill_manual(name = '', values = c('midden' = col_m[3],
+                                              'marine sediment' = col_m[1],
+                                              'lake sediment' = col_m[2],
+                                              'wood' = col_m[8],
+                                              'speleothem' = col_m[4],
+                                              'glacier ice' = col_m[6],
+                                              'peat' = col_m[7]), 
+    guide = guide_legend(override.aes = list(shape = c(21,22,21,23,22,24,24), fill = col_m[c(6,2,1,3,7,4,8)], color = rep('black',7)))) +
     theme_bw() + xlab('Longitude') + ylab('Latitude') +
     theme(plot.title = element_text(hjust = 0.5)) +
     xlim(-180, 180) + ylim(-90, 90) +
@@ -182,27 +191,27 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     geom_point(aes(x = lons[which(archives == 'speleothem')], 
                    y = lats[which(archives == 'speleothem')], 
                    fill = 'speleothem'), shape = 24, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'ice')], 
-                   y = lats[which(archives == 'ice')], 
-                   fill = 'ice'), shape = 21, size = 4) +
+    geom_point(aes(x = lons[which(archives == 'glacier ice')], 
+                   y = lats[which(archives == 'glacier ice')], 
+                   fill = 'glacier ice'), shape = 21, size = 4) +
     geom_point(aes(x = lons[which(archives == 'peat')], 
                    y = lats[which(archives == 'peat')], 
                    fill = 'peat'), shape =22, size = 4) +
     geom_point(aes(x = lons[which(archives == 'wood')], 
                    y = lats[which(archives == 'wood')], 
                    fill = 'wood'), shape = 24, size = 4) +
-    geom_point(aes(x = lons[which(archives == 'pore ice')], 
-                   y = lats[which(archives == 'pore ice')], 
-                   fill = 'pore ice'), shape = 23, size = 4) +
+    geom_point(aes(x = lons[which(archives == 'ice-other')], 
+                   y = lats[which(archives == 'ice-other')], 
+                   fill = 'ice-other'), shape = 23, size = 4) +
     scale_fill_manual(name = '', values = c('midden' = col_m[3],
                                             'marine sediment' = col_m[1],
                                             'lake sediment' = col_m[2],
                                             'wood' = col_m[8],
                                             'speleothem' = col_m[4],
-                                            'ice' = col_m[6],
-                                            'pore ice'=col_m[9],
+                                            'glacier ice' = col_m[6],
+                                            'ice-other'=col_m[9],
                                             'peat' = col_m[7]), 
-                      guide = guide_legend(override.aes = list(shape = c(21, 22, 21, 23, 22, 23, 24, 24), fill = col_m[c(6,2,1,3,7,9,4,8)], color = rep('black',8)))) +
+                      guide = guide_legend(override.aes = list(shape = c(21,23,22,21,23,22,24,24), fill = col_m[c(6,9,2,1,3,7,4,8)], color = rep('black',8)))) +
     theme_bw() + xlab('Longitude') + ylab('Latitude') +
     theme(plot.title = element_text(hjust = 0.5)) +
     xlim(-180, 180) + ylim(-90, 90) +
@@ -226,20 +235,20 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   print(paste('lake sediment:', 
               length(archives[which(archives == 'lake sediment')])))
   print(paste('speleothem:', length(archives[which(archives == 'speleothem')])))
-  print(paste('pore ice:', length(archives[which(archives == 'pore ice')])))
-  print(paste('ice:', length(archives[which(archives == 'ice')])))
+  print(paste('ice-other:', length(archives[which(archives == 'ice-other')])))
+  print(paste('glacier ice:', length(archives[which(archives == 'glacier ice')])))
   print(paste('midden:', length(archives[which(archives == 'midden')])))
   print(paste('peat:', length(archives[which(archives == 'peat')])))
   print(paste('Total records:', length(archives)))
   print(paste('Total sites:', length(unique(names))))
   
-  archs = c('wood','marine sediment','lake sediment','speleothem','pore ice','ice','midden','peat','records','sites')
+  archs = c('wood','marine sediment','lake sediment','speleothem','ice-other','glacier ice','midden','peat','records','sites')
   num_archs = c(length(archives[which(archives == 'wood')]),
                 length(archives[which(archives == 'marine sediment')]),
                 length(archives[which(archives == 'lake sediment')]),
                 length(archives[which(archives == 'speleothem')]),
-                length(archives[which(archives == 'pore ice')]),
-                length(archives[which(archives == 'ice')]),
+                length(archives[which(archives == 'ice-other')]),
+                length(archives[which(archives == 'glacier ice')]),
                 length(archives[which(archives == 'midden')]),
                 length(archives[which(archives == 'peat')]),
                 length(archives),length(unique(names)))
@@ -253,8 +262,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                  length(archives2[which(archives2 == 'marine sediment')]),
                  length(archives2[which(archives2 == 'lake sediment')]),
                  length(archives2[which(archives2 == 'speleothem')]),
-                 length(archives2[which(archives2 == 'pore ice')]),
-                 length(archives2[which(archives2 == 'ice')]),
+                 length(archives2[which(archives2 == 'ice-other')]),
+                 length(archives2[which(archives2 == 'glacier ice')]),
                  length(archives2[which(archives2 == 'midden')]),
                  length(archives2[which(archives2 == 'peat')]),
                  length(archives2),length(unique(names)))
