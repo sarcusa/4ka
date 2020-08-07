@@ -15,29 +15,29 @@ my_plan <- drake_plan(
                     eventDetector = eventDetector, ncores = ncores), hpc = FALSE),
   
   prep_1 = target(Excursion_prep(input_data = data,input_param = parameters),
-                  resources = list(cores = 4)),  
+                  resources = list(cores = 16)),  
   
   analysis_1 = target(Excursion(input_data = prep_1,input_param = parameters,
                          input_var = climate_var),
                       transform = cross(
                         climate_var = c("T","M","all")),
-                      resources = list(cores = 1)),
+                      resources = list(cores = 16)),
   
   prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
-                  resources = list(cores = 4)), 
+                  resources = list(cores = 32)), 
   
   analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
                          input_var = climate_var),
                       transform = cross(climate_var = c("T","M","all")),
-                      resources = list(cores = 1)),
+                      resources = list(cores = 16)),
   
   prep_3 = target(TrendChanges_prep(input_data = data,input_param = parameters),
-                  resources = list(cores = 16)),
+                  resources = list(cores = 32)),
   
   analysis_3 = target(TrendChanges(input_data = prep_3,input_param = parameters,
                             input_var = climate_var), 
                       transform = cross(climate_var = c("T", "M")),
-                      resources = list(cores = 1)),
+                      resources = list(cores = 16)),
   
   results_1 = target(ProxyMap(prep1 = prep_1, prep2 = prep_2,
                               param = parameters, input_var = climate_var),
