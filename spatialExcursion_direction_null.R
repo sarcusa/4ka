@@ -2,25 +2,22 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
   
   TS_EX_orig = data_in
   
+  exDir = file.path(createPaths(), 'excursion')
+  dir.create(file.path(exDir, 'spatial_EX_M'))
+  dir.create(file.path(exDir, 'spatial_EX_T'))
+  datDir = file.path(createPaths(), 'RData')    
+  
   for (y in 1:length(param$eventYrs)) {
-    
-    #rm(list = ls())
-    
-    exDir = file.path(createPaths(), 'excursion')
-    dir.create(file.path(exDir, 'spatial_EX_M'))
-    dir.create(file.path(exDir, 'spatial_EX_T'))
-    datDir = file.path(createPaths(), 'RData')    
-    
     eventYr = param$eventYrs[y]
     
     list2env(loading(file.path(datDir, paste0('EX_results_plusNull_complete_', eventYr/1000, '.RData'))),envir=.GlobalEnv)
+
     
     #TS_EX = TS_EX_orig
     TS_EX = data_EX
     
     for (i in 1:length(TS_EX)) {
-      
-      #Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
+    #Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
       if (length(TS_EX[[i]]$interpretation1_seasonalityGeneral) > 0) {
         if (tolower(TS_EX[[i]]$interpretation1_seasonalityGeneral) == 'summer+' | 
             tolower(TS_EX[[i]]$interpretation1_seasonalityGeneral) == 'winter+') {
@@ -80,10 +77,19 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
     # Assign event occurrence
     for (i in 1:length(inds)) {
       
-      totNullEvents[i,] = TS_EX[[inds[i]]]$null_events_dir * dirs[i]
+      if(length(TS_EX[[inds[i]]]$null_events_dir) != param$numIt){
+        cor = param$numIt - length(TS_EX[[inds[i]]]$null_events_dir)
+        TS_EX[[inds[i]]]$null_events_dir = c(TS_EX[[inds[i]]]$null_events_dir,
+                                             rep(NA,cor))
+        totNullEvents[i,] = TS_EX[[inds[i]]]$null_events_dir * dirs[i]
+        
+      }else{
+        
+        totNullEvents[i,] = TS_EX[[inds[i]]]$null_events_dir * dirs[i]
+      }
+    }  
       
-    }
-    
+          
     for (i in 1:length(longitude)) {
       
       print(paste('iteration i = ', i))
