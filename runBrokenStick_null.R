@@ -25,7 +25,9 @@ BrokenStick_null <- function(data_in, param){
       registerDoParallel(cores = param$ncores)
       
     cp.out <-foreach(it=1:param$numIt,
-                     .verbose=TRUE,.errorhandling = "pass") %dopar% {
+                     .verbose=F,.errorhandling = "pass") %dopar% {
+                       
+                       print(paste0('BS null ITERATION ', it))
                        
                        results = iterativeBrokenStick(TS_BS[[i]]$age, 
                                                       synthDat[,it], 
