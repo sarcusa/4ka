@@ -46,7 +46,7 @@ Excursion_null <- function(data_in, param){
       registerDoParallel(cores = param$ncores)
       #for (it in 1:param$numIt) {
       out <-foreach(it=1:param$numIt,
-                    .verbose=F,.errorhandling = "pass") %dopar% { 
+                    .verbose=TRUE,.errorhandling = "pass") %dopar% { 
                       
                       #print(paste('Iteration', it))
                       
