@@ -3,7 +3,7 @@
 # Parameters common to all analyses
 
 eventYrs = seq(1000,11000,by = 400) #seq(1000,2000, by = 1000) # was seq(1000,11000,by = 400)
-numIt = 10 # number of iterations in null model, was 1000
+numIt = 1000 # number of iterations in null model, was 1000
 res = 5 # grid resolution, deg
 radius = 2000 # search radius, km for the spatial excursion
 climateVar = 'T'   # M for moisture, T for temperature, All for all
