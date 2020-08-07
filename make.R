@@ -22,13 +22,14 @@ source('plan_var.R') #, local = envir
 future::plan(batchtools_slurm, template = file.path(dir,"slurm_batchtools.tmpl"))
 
 # Download necessary data
-set.seed(1)
+#set.seed(1)
 external_data  = readLipd(file_in("http://lipdverse.org/HoloceneAbruptChange/0_9_0/HoloceneAbruptChange0_9_0.zip"))
 print("data downloaded")
-data_sub = list.sample(external_data, size = 100, replace = F)
-print("subset done")
-data_all  =  extractTs(data_sub)
-print("TS extracted")
+#data_sub = list.sample(external_data, size = 50, replace = F)
+#print("subset done")
+#data_all  =  extractTs(data_sub)
+#print("TS extracted")
+data_all = extractTs(external_data)
 
 #vis_drake_graph(my_plan, file = "dependency_graph.html")
 #vis_drake_graph(my_plan)
