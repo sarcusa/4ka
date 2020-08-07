@@ -33,9 +33,9 @@ MeanShift_null <- function(data_in, param){
     # run the mean shift code for all iterations
     #for (it in 1:numIt) {
     out <-foreach(it=1:param$numIt,
-                  .verbose=F,.errorhandling = "pass") %dopar% { 
+                  .verbose=TRUE,.errorhandling = "pass") %dopar% { 
                     
-                    #print(paste0('ITERATION ', it))
+                    print(paste0('MS null ITERATION ', it))
                     
                     output = MS_fun(data_MS[[i]]$age, synthDat[,it])
                     
