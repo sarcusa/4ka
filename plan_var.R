@@ -1,10 +1,6 @@
 my_plan <- drake_plan(
   
   trace = TRUE,
-  
-  data = target(plan_prep(), hpc = FALSE),
-                 
-  map = target(plot_sites(data), hpc = FALSE),
                  
   parameters = target(list(eventYrs = eventYrs, event_window = event_window, 
                     ref_window = ref_window, resCriteria = resCriteria, 
@@ -12,8 +8,14 @@ my_plan <- drake_plan(
                     mainDir = mainDir, numIt = numIt, 
                     res = res, radius = radius, 
                     eventWindow = eventWindow, 
-                    eventDetector = eventDetector, ncores = ncores), hpc = FALSE),
-  
+                    CName = CName, CVers = Cvers, 
+		    eventDetector = eventDetector, OutDat = OutDat,
+	            ncores = ncores), hpc = FALSE),
+
+  data = target(plan_prep(param = parameters), hpc = FALSE),
+
+  map = target(plot_sites(data), hpc = FALSE),
+
   prep_1 = target(Excursion_prep(input_data = data,input_param = parameters),
                   resources = list(cores = 16)),  
   
