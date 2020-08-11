@@ -55,7 +55,7 @@ spatialBrokenStick <- function(data_in,param, climateVar){
     # isolate only the records corresponding to the chosen climate interpretation
     interps = unlist(sapply(TS_BS,"[[","interpretation1_variable"))
     if (climateVar == 'M') {
-      inds = which(interps == 'M' | interps == 'P')
+      inds = which(interps == 'M' | interps == 'P' | interps == 'P-E' | interps ==  P/E)
     } else {
       inds = which(interps == 'T' | interps == 'TM')
     }
