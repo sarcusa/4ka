@@ -6,7 +6,7 @@ CName = "HoloceneAbruptChange" #the database name
 CVers = "0_9_0" #the database version
 OutDat = 'TS_climateInterp_2020.RData' #What should the processed dataset be called?
 eventYrs = seq(1000,11000,by = 400) #seq(1000,2000, by = 1000) # was seq(1000,11000,by = 400)
-numIt = 1000 # number of iterations in null model, was 1000
+numIt = 250 # number of iterations in null model, was 1000
 res = 5 # grid resolution, deg
 radius = 2000 # search radius, km for the spatial excursion
 climateVar = 'T'   # M for moisture, T for temperature, All for all
