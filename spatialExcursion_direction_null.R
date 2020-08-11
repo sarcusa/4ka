@@ -8,6 +8,7 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
   datDir = file.path(createPaths(), 'RData')    
   
   for (y in 1:length(param$eventYrs)) {
+    
     eventYr = param$eventYrs[y]
     
     list2env(loading(file.path(datDir, paste0('EX_results_plusNull_complete_', eventYr/1000, '.RData'))),envir=.GlobalEnv)
@@ -31,7 +32,7 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
     # isolate only the records corresponding to the chosen climate interpretation
     interps = unlist(sapply(TS_EX,"[[","interpretation1_variable"))
     if (climateVar == 'M') {
-      inds = which(interps == 'M' | interps == 'P')
+      inds = which(interps == 'M' | interps == 'P' | interps == 'P-E' | interps ==  P/E)
     } else {
       inds = which(interps == 'T' | interps == 'TM')
     }
@@ -126,11 +127,11 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
     } # end location grid loops
     
     # pull out non NA values
-    tryCatch({locs = which(!is.na(gridEvents), arr.ind = T)
+    locs = which(!is.na(gridEvents), arr.ind = T)
     locs_na = which(is.na(gridEvents), arr.ind = T)
     percentEvents_NULL = gridPercentEvents_null[locs]
     
-    bins = c('<= 0.05', '0.05 - 0.1', '0.1 - 0.25', '0.25 - 0.5', '> 0.5', '0.5 - 0.25', '0.25 - 0.1', '0.1 - 0.05', '<= 0.05')
+    bins = c('<= 0.05', '0.05 - 0.1', '0.1 - 0.25', '0.25 - 0.5', '> 0.5', '0.5 - 0.25', '0.25 - 0.1', '0.1 - 0.05', ' <= 0.05')
     locs_binned = matrix(nrow = nrow(locs) + length(bins), ncol = 2)
     locs_binned[1:nrow(locs),] = locs
     percentEvents_NULL_binned = percentEvents_NULL
@@ -171,7 +172,7 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
         scale_color_manual(name = '', values = c('no event' = 'black', 'wet event' = 'white', 'dry event' = 'white'),
                            breaks = c('wet event', 'dry event', 'no event'),
                            guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('blue','tomato4','grey50'),color = c('black','black','black')))) +
-        scale_fill_manual(name = '', values = rev(myCol)) +
+        scale_fill_manual(name = '', values = rev(myCol), na.translate = FALSE) +
         theme_bw() + xlab('Longitude') + ylab('Latitude') +
         theme(plot.title = element_text(hjust = 0.5)) +
         xlim(-180, 180) + ylim(-90, 90) +
@@ -199,7 +200,7 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
                            breaks = c('warm event', 'cold event', 'no event'),
                            guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('red','royalblue','grey50'),
                                                                     color = c('black','black','black')))) +
-        scale_fill_manual(name = '', values = myCol) +
+        scale_fill_manual(name = '', values = myCol, na.translate = FALSE) +
         theme_bw() + xlab('Longitude') + ylab('Latitude') +
         theme(plot.title = element_text(hjust = 0.5)) +
         xlim(-180, 180) + ylim(-90, 90) +
@@ -211,9 +212,9 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
       
       }
     
-  }, error = function(e){cat("Error:", conditionMessage(e), "did not do spatialExcursion_null")})
+  }
 
   
-}
+
 
 }
