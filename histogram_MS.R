@@ -110,7 +110,7 @@ histogram_MS <- function(data_in, param, climateVar){
     # isolate only the records corresponding to the chosen climate interpretation
     interps = unlist(sapply(TS,"[[","interpretation1_variable"))
     if (climateVar == 'M') {
-      inds = which(interps == 'M' | interps == 'P')
+      inds = which(interps == 'M' | interps == 'P' | interps == 'P-E' | interps ==  P/E)
     } else if (climateVar == 'T') {
       inds = which(interps == 'T' | interps == 'TM')
     } else {
