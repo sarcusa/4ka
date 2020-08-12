@@ -212,7 +212,9 @@ hist_MS_plot <- function(data_in,param, climateVar){
       hist_plot <- list(posDiff_T_MS, negDiff_T_MS, quants_T_MS,
                         posEvents_T_MS, negEvents_T_MS)
       
-  } else {
+  } 
+  
+  if (climateVar == 'M'){
     
       posDiff_M_MS = posDiff
       negDiff_M_MS = negDiff
