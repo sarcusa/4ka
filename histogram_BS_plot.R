@@ -231,7 +231,9 @@ hist_BS_plot <- function(data_in,param, climateVar){
       
     }
     
-  } else {
+  } 
+  
+  if (climateVar == 'M') {
     
     if (eventDetector == 'MS') {
       posDiff_M_MS = posDiff
