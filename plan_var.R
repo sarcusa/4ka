@@ -33,10 +33,13 @@ my_plan <- drake_plan(
                       transform = cross(climate_var = c("T","M","All")),
                       resources = list(cores = 16)),
   
-  prep_3 = target(TrendChanges_prep(input_data = data,input_param = parameters),
+  prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
                   resources = list(cores = 32)),
+  prep_3b = target(TrendChanges_prep2(input_data = prep_3a,
+                                      input_param = parameters),
+                   resources = list(cores = 32)),
   
-  analysis_3 = target(TrendChanges(input_data = prep_3,input_param = parameters,
+  analysis_3 = target(TrendChanges(input_data = prep_3b,input_param = parameters,
                             input_var = climate_var), 
                       transform = cross(climate_var = c("T", "M")),
                       resources = list(cores = 16)),
