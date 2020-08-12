@@ -205,7 +205,9 @@ histEX_plot <- function(data_in,param, climateVar){
     histogram  <- list(posDiff_M_EX, negDiff_M_EX, quants_M_EX,
                        posEvents_M_EX, negEvents_M_EX)
     
-  } else {
+  } 
+  
+  if (climateVar == 'T') {
     
     posDiff = diffEvents
     negDiff = diffEvents
