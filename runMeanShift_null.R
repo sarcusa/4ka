@@ -33,7 +33,7 @@ MeanShift_null <- function(data_in, param){
     # run the mean shift code for all iterations
     #for (it in 1:numIt) {
     out <-foreach(it=1:param$numIt,
-                  .verbose=TRUE,.errorhandling = "pass") %dopar% { 
+                  .verbose=F,.errorhandling = "pass") %dopar% { 
                     
                     print(paste0('MS null ITERATION ', it))
                     
