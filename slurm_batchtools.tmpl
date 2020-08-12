@@ -3,8 +3,8 @@
 #SBATCH --job-name=<%= job.name %>
 #SBATCH --output=<%= log.file %>
 #SBATCH --error=<%= log.file %>
-#SBATCH --ntasks=1 
-##SBATCH --time=1000:00
+##SBATCH --ntasks=1 
+#SBATCH --time=2000:00
 #SBATCH --mem=64000
 #SBATCH --cpus-per-task=<%= resources[["cores"]] %>
 ##SBATCH --cpus-per-task=2
