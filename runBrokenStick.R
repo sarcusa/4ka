@@ -5,10 +5,10 @@ BrokenStick <- function(data_in, param){
   mainDir = createPaths()
   TS_BS = filterTs(data_in, 'useBS == 1')
   figDir = file.path(mainDir, 'broken_stick', 'individual')
-  dir.create(figDir)
-  
-  for (i in 1:length(TS_BS)) {
     
+  #for (i in 1:length(TS_BS)) {
+    for (i in 1:50) {
+       
     print(paste0('RECORD ', i))
     
     # run the broken stick code
@@ -39,21 +39,7 @@ BrokenStick <- function(data_in, param){
   fileName = file.path(mainDir, 'RData', 'BS_results_complete.RData')
   save(TS_BS, file = fileName)
   
-  histBreaks = seq(100, 11500, by = 200)
-  yrs = seq(300, 11500, by = 600)
-  yrStr = yrs / 1000
-  
-  p = ggplot() + geom_histogram(aes(histBreaks), breaks = yrs) #breakPts was histBreaks
-  pg = ggplot_build(p)
-  densityBS = pg$data[[1]]$density
-  xvals = pg$data[[1]]$x
-  
-  s  <- ggplot() + geom_col(aes(x = xvals, y = densityBS)) + 
-    xlab('Event years [BP]') + ylab('Density of events') + 
-    ggtitle('Broken Stick Results (simple plot)')
-  
-  output <- list(TS_BS,s)
-  
-  return(output)
+ 
+  return(TS_BS)
   
 }
