@@ -3,7 +3,7 @@ hist_BS_plot <- function(data_in,param, climateVar){
   eventDetector = 'BS'
   
   figDir = file.path(createPaths(), 'histograms')
-  dataDir = file.path(createPaths(), 'RData')
+  datDir = file.path(createPaths(), 'RData')
   
   eventTypeStr = ifelse(climateVar == 'M', 'moisture', 
                         ifelse(climateVar == 'T', 'temperature', ''))
@@ -207,9 +207,9 @@ hist_BS_plot <- function(data_in,param, climateVar){
       quants_T_MS = diffNullQuants
       
       save(posDiff_T_MS, negDiff_T_MS, quants_T_MS, 
-           file = file.path(dataDir, 'histogram_T_MS.RData'))
+           file = file.path(datDir, 'histogram_T_MS.RData'))
       save(posEvents_T_MS, negEvents_T_MS, 
-           file = file.path(dataDir, 'histogram_ALL_T_MS.RData'))
+           file = file.path(datDir, 'histogram_ALL_T_MS.RData'))
       
       histogram  <- list(posDiff_T_MS, negDiff_T_MS, quants_T_MS, 
                          posEvents_T_MS, negEvents_T_MS)
@@ -222,9 +222,9 @@ hist_BS_plot <- function(data_in,param, climateVar){
       quants_T_BS = diffNullQuants
       
       save(posDiff_T_BS, negDiff_T_BS, quants_T_BS, 
-           file = file.path(dataDir, 'histogram_T_BS.RData'))
+           file = file.path(datDir, 'histogram_T_BS.RData'))
       save(posEvents_T_BS, negEvents_T_BS, 
-           file = file.path(dataDir, 'histogram_ALL_T_BS.RData'))
+           file = file.path(datDir, 'histogram_ALL_T_BS.RData'))
       
       histogram  <- list(posDiff_T_BS, negDiff_T_BS, quants_T_BS,
                          posEvents_T_BS, negEvents_T_BS)
@@ -243,9 +243,9 @@ hist_BS_plot <- function(data_in,param, climateVar){
       quants_M_MS = diffNullQuants
       
       save(posDiff_M_MS, negDiff_M_MS, quants_M_MS, 
-           file = file.path(dataDir, 'histogram_M_MS.RData'))
+           file = file.path(datDir, 'histogram_M_MS.RData'))
       save(posEvents_M_MS, negEvents_M_MS, 
-           file = file.path(dataDir, 'histogram_ALL_M_MS.RData'))
+           file = file.path(datDir, 'histogram_ALL_M_MS.RData'))
       
       histogram  <- list(posDiff_M_MS, negDiff_M_MS, quants_M_MS,
                          posEvents_M_MS, negEvents_M_MS)
@@ -258,9 +258,9 @@ hist_BS_plot <- function(data_in,param, climateVar){
       quants_M_BS = diffNullQuants
       
       save(posDiff_M_BS, negDiff_M_BS, quants_M_BS, 
-           file = file.path(dataDir, 'histogram_M_BS.RData'))
+           file = file.path(datDir, 'histogram_M_BS.RData'))
       save(posEvents_M_BS, negEvents_M_BS, 
-           file = file.path(dataDir, 'histogram_ALL_M_BS.RData'))
+           file = file.path(datDir, 'histogram_ALL_M_BS.RData'))
       
       histogram  <- list(posDiff_M_BS, negDiff_M_BS, quants_M_BS, 
                          posEvents_M_BS, negEvents_M_BS)
@@ -269,7 +269,15 @@ hist_BS_plot <- function(data_in,param, climateVar){
     
   }
   
-  save(recordCounts, file = file.path(dataDir, 
+if (climateVar == 'All') {
+
+    histogram <- NA
+
+  }
+
+
+
+  save(recordCounts, file = file.path(datDir, 
                                       paste0('recordCountStats_', 
                                       eventDetector, '_', 
                                        climateVar, '.RData')))
