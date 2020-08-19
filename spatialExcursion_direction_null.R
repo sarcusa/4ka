@@ -158,63 +158,57 @@ spatialExcursion_null  <-  function(data_in, param, climateVar){
     
     if (climateVar == 'M') {
       
-      ## BINNED, more distinct color for > 95%
       myCol = c('#543005','#bf812d','#dfc27d','#f6e8c3','snow2','#c7eae5','#80cdc1','#35978f','#003c30')
-      tryCatch({ggplot() + geom_raster(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]], fill = as.factor(percentEvents_NULL_binned))) + 
-        geom_tile(aes(x = longitude[locs_binned[(length(percentEvents_NULL)+1):length(percentEvents_NULL_binned),1]],
-                      y = latitude[locs_binned[(length(percentEvents_NULL)+1):length(percentEvents_NULL_binned),2]]), 
-                  height=5, width=6, fill = 'white') +
+      
+      tryCatch({s <- geoChronR::baseMap(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F) + 
+        geom_tile(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]],width = 5.5,height = 5.5, fill = as.factor(percentEvents_NULL_binned))) + 
         borders("world", colour="black") + 
         geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)]), color='white', size = 3) +
-        geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)], color='no event'),fill='grey50',shape = 21, size = 2) +
-        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)], color='wet event'),fill='blue',shape = 24, size = 3) +
-        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)], color='dry event'),fill='tomato4',shape = 25, size = 3) +
-        scale_color_manual(name = '', values = c('no event' = 'black', 'wet event' = 'white', 'dry event' = 'white'),
-                           breaks = c('wet event', 'dry event', 'no event'),
-                           guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('blue','tomato4','grey50'),color = c('black','black','black')))) +
-        scale_fill_manual(name = '', values = rev(myCol), na.translate = FALSE) +
-        theme_bw() + xlab('Longitude') + ylab('Latitude') +
-        theme(plot.title = element_text(hjust = 0.5)) +
-        xlim(-180, 180) + ylim(-90, 90) +
-        ggtitle(paste0(eventYr/1000,' ka excursion: Moisture\nProbability that event density is simulated in the null'))
-      ggsave(file.path(exDir, 'spatial_EX_M', paste0(y,'-', eventYr/1000, '.pdf')))
+        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)]), color='white', size = 3) +
+        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)]), color='white', size = 3) +
+        geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)], color='no event'), size = 2, shape = 21, fill = "grey50") +
+        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)], color='+ event'), size = 3, shape = 24, fill = "blue") +
+        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)], color='- event'), size = 3, shape = 25, fill = "tomato4") +
+        scale_color_manual(name = '', values = c('no event' = 'black', '+ event' = 'white', '- event' = 'white'),breaks = c('+ event', '- event', 'no event'),guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('blue','tomato4','grey50'),color = c('black','black','black')))) +
+        scale_fill_manual(name = '', values = rev(myCol))+
+        ggtitle(paste0('EX: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$event_window/2/1000, 'ka events'))+
+        geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black") 
       
-      }, error = function(e){cat("Error:", conditionMessage(e), " may not have plotted")})
+    pdf(file.path(exDir, 'spatial_EX_M', 
+                       paste0(y,'-', eventYr/1000, '.pdf')))
+    plot(s)
+    dev.off() }, error = function(e){cat("Error:", conditionMessage(e), " may not have plotted")})
       
+          
     }
     
     if (climateVar == 'T') {
       
-      ## BINNED, more distinct color for > 95%
       myCol = c('#67001f','#d6604d','#f4a582','#fddbc7','snow2','#d1e5f0','#92c5de','#4393c3','#053061')
-      tryCatch({ggplot() + geom_raster(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]], fill = as.factor(percentEvents_NULL_binned))) + 
-        geom_tile(aes(x = longitude[locs_binned[(length(percentEvents_NULL)+1):length(percentEvents_NULL_binned),1]],
-                      y = latitude[locs_binned[(length(percentEvents_NULL)+1):length(percentEvents_NULL_binned),2]]), 
-                  height=5, width=6, fill = 'white') +
+      
+      tryCatch({s <- geoChronR::baseMap(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F) + 
+        geom_tile(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]],width = 5.5,height = 5.5, fill = as.factor(percentEvents_NULL_binned))) + 
         borders("world", colour="black") + 
         geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)]), color='white', size = 3) +
-        geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)], color='no event'), fill='grey50',shape = 21,size = 2) +
-        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)], color='warm event'),fill='red',shape = 24,size = 3) +
-        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)], color='cold event'),fill='royalblue',shape = 25, size = 3) +
-        scale_color_manual(name = '', values = c('no event' = 'black', 'warm event' = 'white', 'cold event' = 'white'),
-                           breaks = c('warm event', 'cold event', 'no event'),
-                           guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('red','royalblue','grey50'),
-                                                                    color = c('black','black','black')))) +
-        scale_fill_manual(name = '', values = myCol, na.translate = FALSE) +
-        theme_bw() + xlab('Longitude') + ylab('Latitude') +
-        theme(plot.title = element_text(hjust = 0.5)) +
-        xlim(-180, 180) + ylim(-90, 90) +
-        ggtitle(paste0(eventYr/1000,' ka excursion: Temperature\nProbability that event density is simulated in the null'))
+        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)]), color='white', size = 3) +
+        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)]), color='white', size = 3) +
+        geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)], color='no event'), size = 2, fill = "grey50", shape = 21) +
+        geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)], color='+ event'), size = 3, fill = "red", shape = 24) +
+        geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)], color='- event'), size = 3, fill = "royalblue", shape = 25) +
+        scale_color_manual(name = '', values = c('no event' = 'black', '+ event' = 'white', '- event' = 'white'),
+                           breaks = c('+ event', '- event', 'no event'),
+                           guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('red','royalblue','grey50'),color = c('black','black','black')))) +
+        scale_fill_manual(name = '', values = myCol) +
+        ggtitle(paste0('EX: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$event_window/2/1000, 'ka events'))+
+        geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")
       
-      ggsave(file.path(exDir, 'spatial_EX_T', paste0(y,'-', eventYr/1000, '.pdf')))
-        
-      }, error = function(e){cat("Error:", conditionMessage(e), " may not have plotted")})
+    pdf(file.path(exDir, 'spatial_EX_T', paste0(y,'-', eventYr/1000, '.pdf')))
+    plot(s)
+    dev.off()}, error = function(e){cat("Error:", conditionMessage(e), " may not have plotted")})
       
+            
       }
     
   }
-
-  
-
 
 }
