@@ -17,53 +17,18 @@ hist_BS <- function(data_in, param, climateVar){
   recordCounts = matrix(NA, nrow = length(param$eventYrs), ncol = 4) # years, all records, + events, - events
   recordCounts[,1] = param$eventYrs
   
-  TS_BS_orig = data_in[[1]]
+  TS_BS_orig = data_in
   
   for (y in 1:length(param$eventYrs)) {
     
     eventYr = param$eventYrs[y]
     print(paste('Year:', eventYr))
     
-    ## MEAN SHIFT PROCESSING
-    if (eventDetector == 'MS') {
-      
-      TS_MS = TS_MS_orig
-      
-      for (i in 1:length(TS_MS)) {
-        # Filter records that don't contain event year in age range
-        if (min(TS_MS[[i]]$age) > eventYr || max(TS_MS[[i]]$age) < eventYr) {
-          TS_MS[[i]]$useMS = 0
-          #print('Out of range')
-        }
-        
-        #Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
-        if (length(TS_MS[[i]]$interpretation1_seasonalityGeneral) > 0) {
-          if (tolower(TS_MS[[i]]$interpretation1_seasonalityGeneral) == 'summer+' | 
-                tolower(TS_MS[[i]]$interpretation1_seasonalityGeneral) == 'winter+') {
-            TS_MS[[i]]$useMS = -1
-            print(TS_MS[[i]]$interpretation1_seasonalityGeneral)
-          }
-        }
-      }
-      TS_MS = filterTs(TS_MS, 'useMS == 1')
-      
-      # Assign event occurrence
-      for (i in 1:length(TS_MS)) {
-        
-        TS_MS[[i]]$eventMS = 0
-        TS_MS[[i]]$dirMS = 0
-        if (!is.na(TS_MS[[i]]$sig_brks) && any(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)) {
-          TS_MS[[i]]$eventMS = 1
-          eve_i = which(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)
-          TS_MS[[i]]$dirMS = TS_MS[[i]]$brk_dirs[eve_i]
-        }
-        
-      }
-      TS = TS_MS
-    } else { ## BROKEN STICK PROCESSING
+    ## BROKEN STICK PROCESSING
       TS_BS = TS_BS_orig
       
       for (i in 1:length(TS_BS)) {
+       # for (i in 1:50) {
         # Filter records that don't contain event year in age range
         if (min(TS_BS[[i]]$age) > eventYr || max(TS_BS[[i]]$age) < eventYr) {
           TS_BS[[i]]$useBS = 0
@@ -84,7 +49,7 @@ hist_BS <- function(data_in, param, climateVar){
       
       # Assign event occurrence
       for (i in 1:length(TS_BS)) {
-        
+      #  for (i in 1:50) {
         TS_BS[[i]]$eventBS = 0
         TS_BS[[i]]$dirBS = 0
         if (!is.na(TS_BS[[i]]$brk_pts) && any(TS_BS[[i]]$brk_pts >= eventYr - param$eventWindow & TS_BS[[i]]$brk_pts <= eventYr + param$eventWindow)) {
@@ -98,8 +63,7 @@ hist_BS <- function(data_in, param, climateVar){
         
       }
       TS = TS_BS
-    }
-    
+        
     # isolate only the records corresponding to the chosen climate interpretation
     interps = unlist(sapply(TS,"[[","interpretation1_variable"))
     if (climateVar == 'M') {
@@ -129,7 +93,7 @@ hist_BS <- function(data_in, param, climateVar){
     } else {
       dirEvents = unlist(sapply(TS,"[[","dirBS"))[inds]
     }
-    dirChange = dirs * dirEvents                          # (0, 1, -1): (no, positive, negative) climate event
+    dirChange = dirs * dirEvents # (0, 1, -1): (no, positive, negative) climate event
     
     # store real events summary for the year
     allEvents[y] = sum(events == 1) / length(events)
