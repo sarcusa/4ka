@@ -44,13 +44,40 @@ histEX_plot <- function(data_in,param, climateVar){
               legend.text = element_text(size = 12)) +
         ggtitle(paste0('Excursion:\nAll events'))
       
+      d  <- ggplot()+ 
+        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
+                 fill = 'grey60', color = 'grey10') +
+        scale_x_continuous(name = 'ky BP', 
+                           breaks = eventYrs[seq(1,25,by=2)], 
+                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        ylab('# records') +
+        theme_bw() + 
+        theme(legend.position = "none")
+      
+      p1 <- ggplotGrob(s)
+      p2 <- ggplotGrob(d)
+      
+      p <- rbind(p1, p2, size = "first")
+      p$widths <- unit.pmax(p1$widths, p2$widths)
       pdf(file.path(figDir, paste0('EX_', climateVar, '.pdf')))
-      print(s)
+      grid.newpage()
+      grid.draw(p)
       dev.off()
       
-      plots = s
+      plots = list(p)
       
+        
     } else {
+      
+      b  <- ggplot()+ 
+        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
+                 fill = 'grey60', color = 'grey10') +
+        scale_x_continuous(name = 'ky BP', 
+                           breaks = eventYrs[seq(1,25,by=2)], 
+                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        ylab('# records') +
+        theme_bw() + 
+        theme(legend.position = "none")
       
       p1 = ggplot() + geom_col(aes(x = eventYrs, y = allEvents), 
                                fill = 'grey60', color = 'grey10') +
@@ -98,18 +125,31 @@ histEX_plot <- function(data_in,param, climateVar){
                            legend.text = element_text(size = 12)) +
         ggtitle(paste0('Negative ', eventTypeStr,' events'))
             
+      g0 <- ggplotGrob(b)
       g1 <- ggplotGrob(p1)
       g2 <- ggplotGrob(p2)
       g3 <- ggplotGrob(p3)
       
-      g <- rbind(g1, g2, g3, size = "first")
-      g$widths <- unit.pmax(g1$widths, g2$widths, g3$widths)
-      pdf(file.path(figDir, paste0('EX_', climateVar, '_v2.pdf')))
+      g <- rbind(g1, g2, g3, g0, size = "first")
+      g$widths <- unit.pmax(g1$widths, g2$widths, g3$widths, g0$widths)
+      pdf(file.path(figDir, paste0('EX_', 
+                                   climateVar, '_v2.pdf')))
       grid.newpage()
       grid.draw(g)
       dev.off()
       
       ## NET HISTOGRAM
+      
+      b  <- ggplot()+ 
+        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
+                 fill = 'grey60', color = 'grey10') +
+        scale_x_continuous(name = 'ky BP', 
+                           breaks = eventYrs[seq(1,25,by=2)], 
+                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        ylab('# records') +
+        theme_bw() + 
+        theme(legend.position = "none")
+      
       posDiff = diffEvents
       negDiff = diffEvents
       posDiff[diffEvents < 0] = 0
@@ -167,18 +207,21 @@ histEX_plot <- function(data_in,param, climateVar){
               legend.position = "bottom", legend.text = element_text(size = 12)) +
         ggtitle(paste0('Negative ', eventTypeStr,' events'))
       
+      d0 <- ggplotGrob(b)
       d1 <- ggplotGrob(p1)
       d2 <- ggplotGrob(p2)
       d3 <- ggplotGrob(p3)
       
-      d <- rbind(d1, d2, d3, size = "first")
-      d$widths <- unit.pmax(d1$widths, d2$widths, d3$widths)
+      d <- rbind(d1, d2, d3, d0, size = "first")
+      d$widths <- unit.pmax(d1$widths, d2$widths, d3$widths, d0$widths)
       pdf(file.path(figDir, paste0('EX_', climateVar, '.pdf')))
       grid.newpage()
       grid.draw(d)
       dev.off()
       
       plots = list(g,d)
+      
+      
       
     }
     
@@ -230,6 +273,12 @@ histEX_plot <- function(data_in,param, climateVar){
     
   }
   
+  if (climateVar == 'All') {
+
+    histogram <- NA
+
+  }  
+     
   save(recordCounts, file = file.path(dataDir, paste0('recordCountStats_EX_', climateVar, '.RData')))
   
   output  <- list(plots, histogram)
