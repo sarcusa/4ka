@@ -15,7 +15,7 @@ Excursion_null <- function(data_in, param){
     
     for (i in 1:length(data_EX)) {
             
-      print(paste0('RECORD ', i))
+      #print(paste0('RECORD ', i))
       
       data_EX[[i]]$null_events = list()
       
