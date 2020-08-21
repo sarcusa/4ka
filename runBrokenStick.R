@@ -6,8 +6,8 @@ BrokenStick <- function(data_in, param){
   TS_BS = filterTs(data_in, 'useBS == 1')
   figDir = file.path(mainDir, 'broken_stick', 'individual')
     
-  #for (i in 1:length(TS_BS)) {
-    for (i in 1:50) {
+  for (i in 1:length(TS_BS)) {
+  #  for (i in 1:50) {
        
     print(paste0('RECORD ', i))
     
