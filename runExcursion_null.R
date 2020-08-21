@@ -25,11 +25,10 @@ Excursion_null <- function(data_in, param){
         ageInds = NA
       }
       
-      synthDat = try(createSyntheticTimeseries(data_EX[[i]]$age, 
-                                               data_EX[[i]]$paleoData_values,
-                                               nens = param$numIt, 
-                                               index.to.model = ageInds), 
-                     silent = T)
+      synthDat = try(createSyntheticTimeseries(time = data_EX[[i]]$age, 
+                                      values = data_EX[[i]]$paleoData_values,
+                                      n.ens = param$numIt, 
+                                    index.to.model = ageInds),silent = T)
       
       if (class(synthDat) == "try-error") {
         print(paste('Try error, running instead with method = ML'))
