@@ -16,7 +16,7 @@ histEX <- function(data_in, param, climateVar){
   
   for (y in 1:length(param$eventYrs)) {
     
-    remove(data_EX)
+    #remove(data_EX)
     eventYr = param$eventYrs[y]
     print(paste('Year:', eventYr))
     
