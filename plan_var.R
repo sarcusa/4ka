@@ -16,48 +16,51 @@ my_plan <- drake_plan(
 
   map = target(plot_sites(data), hpc = FALSE),
 
-  prep_1 = target(Excursion_prep(input_data = data,input_param = parameters),
-                  resources = list(cores = 16)),  
+  #prep_1 = target(Excursion_prep(input_data = data,input_param = parameters),
+  #                resources = list(cores = 16)),  
   
-  analysis_1 = target(Excursion(input_data = prep_1,input_param = parameters,
-                         input_var = climate_var),
-                      transform = cross(
-                        climate_var = c("T","M","All")),
-                      resources = list(cores = 16)),
+  #analysis_1 = target(Excursion(input_data = prep_1,input_param = parameters,
+  #                       input_var = climate_var),
+  #                    transform = cross(
+  #                      climate_var = c("T","M","All")),
+  #                    resources = list(cores = 16)),
   
-  prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
-                  resources = list(cores = 32)), 
+  #prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
+  #                resources = list(cores = 32)), 
   
-  analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
-                         input_var = climate_var),
-                      transform = cross(climate_var = c("T","M","All")),
-                      resources = list(cores = 16)),
+  #analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
+  #                       input_var = climate_var),
+  #                    transform = cross(climate_var = c("T","M","All")),
+  #                    resources = list(cores = 16)),
   
   prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
-                  resources = list(cores = 32)),
+                  resources = list(cores = 16)),
   prep_3b = target(TrendChanges_prep2(input_data = prep_3a,
                                       input_param = parameters),
                    resources = list(cores = 32)),
   
-  analysis_3 = target(TrendChanges(input_data = prep_3b,input_param = parameters,
-                            input_var = climate_var), 
-                      transform = cross(climate_var = c("T", "M")),
-                      resources = list(cores = 16)),
+  #test = target(BrokenStick_null_test(data_in = prep_3a, param = parameters),
+  #              resources = list(cores = 16))
   
-  results_1 = target(ProxyMap(prep1 = prep_1, prep2 = prep_2,
-                              param = parameters, input_var = climate_var),
-                     hpc = FALSE,
-                     transform = cross(climate_var = c("T", "M"))),
+  #analysis_3 = target(TrendChanges(input_data = prep_3b,input_param = parameters,
+  #                          input_var = climate_var), 
+  #                    transform = cross(climate_var = c("T", "M")),
+  #                    resources = list(cores = 16)),
   
-  results_2 = target(histogram_net(EX = analysis_1, MS = analysis_2, 
-                                   BS = analysis_3, param = parameters), 
-                     transform = map(analysis_1, analysis_2, analysis_3),
-                     hpc = FALSE),
+  #results_1 = target(ProxyMap(prep1 = prep_1, prep2 = prep_2,
+  #                            param = parameters, input_var = climate_var),
+  #                   hpc = FALSE,
+  #                   transform = cross(climate_var = c("T", "M"))),
   
-  report  = target(rmarkdown::render(
-    knitr_in("report.Rmd"),
-    output_file = file_out("report.html"),
-   quiet = TRUE), hpc = FALSE)
+  #results_2 = target(histogram_net(EX = analysis_1, MS = analysis_2, 
+  #                                 BS = analysis_3, param = parameters), 
+  #                   transform = map(analysis_1, analysis_2, analysis_3),
+  #                   hpc = FALSE),
+  
+  #report  = target(rmarkdown::render(
+  #  knitr_in("report.Rmd"),
+  #  output_file = file_out("report.html"),
+  # quiet = TRUE), hpc = FALSE)
   
 )
 
