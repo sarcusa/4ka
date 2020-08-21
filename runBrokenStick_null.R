@@ -8,7 +8,7 @@ BrokenStick_null <- function(data_in, param){
   #plan(cluster)
   
   for (i in 1:length(TS_BS)) {
-  #  for (i in 1:50) {
+    #for (i in 1:50) {
     #print(paste0('RECORD ', i))
     
     TS_BS[[i]]$null_brk_pts = list()
@@ -17,14 +17,14 @@ BrokenStick_null <- function(data_in, param){
     # added on 18-08-20 SA
     TS_BS[[i]]$null_brk_dirs = list()
     
-    synthDat = try(createSyntheticTimeseries(TS_BS[[i]]$age,
-                                         TS_BS[[i]]$paleoData_values,
-                                         nens = param$numIt), silent = T)
+    synthDat = try(createSyntheticTimeseries(time = TS_BS[[i]]$age,
+                                             values = TS_BS[[i]]$paleoData_values,
+                                         n.ens = param$numIt))
     if(class(synthDat) == "try-error"){
       
-      synthDat = try(createSyntheticTimeseries(TS_BS[[i]]$age,
-                                               TS_BS[[i]]$paleoData_values,
-                                               nens = param$numIt), silent = T)
+      synthDat = try(createSyntheticTimeseries(time = TS_BS[[i]]$age,
+                                       values = TS_BS[[i]]$paleoData_values,
+                                               n.ens = param$numIt))
       if(class(synthDat) == "try-error"){
         
         print(paste0("Had to skip record = ",TS_BS[[i]]$dataSetName))
@@ -37,9 +37,9 @@ BrokenStick_null <- function(data_in, param){
     
     registerDoParallel(cores = param$ncores)
       
-    cp  <- list()
-    cp.se <- list()
-    brk_dirs  <- list()
+    #cp  <- list()
+    #cp.se <- list()
+    #brk_dirs  <- list()
       
     cp.out <-foreach(it=1:param$numIt,
                      .verbose=F,.errorhandling = "pass") %do% {
@@ -86,7 +86,7 @@ BrokenStick_null <- function(data_in, param){
   } #end of for loop
   
   fileName = file.path(mainDir, 'RData', 'BS_results_plusNull.RData')
-  save(TS_BS, file = filename)
+  save(TS_BS, file = fileName)
   write.table(skipped_records, file = file.path(mainDir,"skipped_records_BS.txt"))
   
   return(TS_BS)
