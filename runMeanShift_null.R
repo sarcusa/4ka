@@ -7,14 +7,14 @@ MeanShift_null <- function(data_in, param){
   for (i in 1:length(data_MS)) {
    
     
-    print(paste0('RECORD ', i))
+    #print(paste0('RECORD ', i))
     
     data_MS[[i]]$null_sig_brks = list()
     data_MS[[i]]$null_brk_dirs = list()
     
-    synthDat = try(createSyntheticTimeseries(data_MS[[i]]$age, 
-                                             data_MS[[i]]$paleoData_values, 
-                                             nens = param$numIt), silent = T)
+    synthDat = try(createSyntheticTimeseries(time = data_MS[[i]]$age, 
+                                    values = data_MS[[i]]$paleoData_values, 
+                                             n.ens = param$numIt), silent = T)
     
     if (class(synthDat) == "try-error") {
       print(paste('Try error, running instead with method = ML'))
@@ -35,7 +35,7 @@ MeanShift_null <- function(data_in, param){
     out <-foreach(it=1:param$numIt,
                   .verbose=F,.errorhandling = "pass") %dopar% { 
                     
-                    print(paste0('MS null ITERATION ', it))
+                    #print(paste0('MS null ITERATION ', it))
                     
                     output = MS_fun(data_MS[[i]]$age, synthDat[,it])
                     
