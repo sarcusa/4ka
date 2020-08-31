@@ -8,8 +8,8 @@ BrokenStick_null <- function(data_in, param){
   #plan(cluster)
   
   for (i in 1:length(TS_BS)) {
-    #for (i in 1:50) {
-    #print(paste0('RECORD ', i))
+    #for (i in 1:1) {
+    print(paste0('RECORD ', i))
     
     TS_BS[[i]]$null_brk_pts = list()
     TS_BS[[i]]$null_brk_ptsErr = list()
@@ -42,13 +42,13 @@ BrokenStick_null <- function(data_in, param){
     #brk_dirs  <- list()
       
     cp.out <-foreach(it=1:param$numIt,
-                     .verbose=F,.errorhandling = "pass") %do% {
+                     .verbose=F,.errorhandling = "pass") %dopar% {
                        
                        #print(paste0('BS null ITERATION ', it))
                        #for (it in 1:param$numIt) {
                        results = iterativeBrokenStick(TS_BS[[i]]$age, 
                                                       synthDat[,it], 
-                                                      plot.opt = F)
+                                                      plot.opt = F )
                      #  TS_BS[[i]]$null_brk_pts[[it]] = results$cp
                      #  TS_BS[[i]]$null_brk_ptsErr[[it]] = results$cp.se
                      #}
