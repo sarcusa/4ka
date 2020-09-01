@@ -50,7 +50,7 @@ my_plan <- drake_plan(
   #results_1 = target(ProxyMap(prep1 = prep_1, prep2 = prep_2,
   #                            param = parameters, input_var = climate_var),
   #                   hpc = FALSE,
-  #                   transform = cross(climate_var = c("T", "M"))),
+  #                   transform = cross(climate_var = c("T", "M", "All))),
   
   #results_2 = target(histogram_net(EX = analysis_1, MS = analysis_2, 
   #                                 BS = analysis_3, param = parameters), 
