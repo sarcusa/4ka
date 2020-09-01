@@ -5,6 +5,10 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   
   climateVar = input_var
   
+  #Manual load
+  #load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
+  #TS_MS = analysis_2b
+  
   TS_MS = prep1
   
   # avoid double-counting sites if they have annual and seasonal records
@@ -24,7 +28,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   # isolate only the records corresponding to the chosen climate interpretation
   interps = unlist(sapply(TS_MS,"[[","interpretation1_variable"))
   if (climateVar == 'M') {
-    inds = which(interps == 'M' | interps == 'P')
+    inds = which(interps == 'M' | interps == 'P'| interps == 'P-E' | interps ==  'P/E')
   } else {
     inds = which(interps == 'T' | interps == 'TM')
   }
@@ -34,6 +38,12 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   archives = unlist(sapply(TS_MS,"[[","archiveType"))[inds]
   archives[which(archives == 'marnine sediment' | archives == 'marine' | archives == 'TBD')] = 'marine sediment'
   
+  everythingMS = which(interps == 'M' | interps == 'P'| interps == 'P-E' | interps ==  'P/E' | interps == 'T' | interps == 'TM')
+  latsMS = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[everythingMS])
+  lonsMS = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[everythingMS])
+  namesMS = unlist(sapply(TS_MS,"[[","dataSetName"))[everythingMS]
+  archivesMS = unlist(sapply(TS_MS,"[[","archiveType"))[everythingMS]
+  archivesMS[which(archivesMS == 'marnine sediment' | archivesMS == 'marine' | archivesMS == 'TBD')] = 'marine sediment'
   
   for (i in 1:length(TS_MS)) {
     print(TS_MS[[i]]$paleoData_proxy)
@@ -42,8 +52,11 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     }
   }
   proxies = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[inds]
+  proxiesMS = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[everythingMS]
   allDF = data.frame(name = names, lat = lats, lon = lons,
                      archive = archives, proxy = proxies)
+  everythingDF = data.frame(name = namesMS, lat = latsMS, lon = lonsMS,
+                            archive = archivesMS, proxy = proxiesMS)
   
   eventYrs = param$eventYrs
   
@@ -51,22 +64,36 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     
     eventYr = eventYrs[y]
     
-    TS = prep2
-        
+    # must decomment for automatic
+    #TS = prep2
+     
+    #use to plot manually
+    load(file.path(datDir, paste0('EX_results_plusNull_complete_', eventYr/1000, '.RData')))
+    TS = data_EX
+    ##
+    
+    
     # isolate only the records corresponding to the chosen climate interpretation
     interp = unlist(sapply(TS,"[[","interpretation1_variable"))
     if (climateVar == 'M') {
-      inds_ex = which(interp == 'M' | interp == 'P')
+      inds_ex = which(interp == 'M' | interp == 'P'| interps == 'P-E' | interps ==  'P/E')
     } else if (climateVar == 'T')  {
       inds_ex = which(interp == 'T' | interp == 'TM')
     } else {
-      inds_ex = which(interp == 'T' | interp == 'TM' | interp == 'M' | interp == 'P')
+      inds_ex = which(interp == 'T' | interp == 'TM' | interp == 'M' | interp == 'P'| interps == 'P-E' | interps ==  'P/E')
     }
-    
+        
     lat = as.numeric(unlist(sapply(TS,"[[","geo_latitude"))[inds_ex])
     lon = as.numeric(unlist(sapply(TS,"[[","geo_longitude"))[inds_ex])
     name = unlist(sapply(TS,"[[","dataSetName"))[inds_ex]
     archive = unlist(sapply(TS,"[[","archiveType"))[inds_ex]
+    
+    everythingEX = which(interps == 'M' | interps == 'P'| interps == 'P-E' | interps ==  'P/E' | interp == 'T' | interps == 'TM')
+    latsEX = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[everythingEX])
+    lonsEX = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[everythingEX])
+    namesEX = unlist(sapply(TS_MS,"[[","dataSetName"))[everythingEX]
+    archivesEX = unlist(sapply(TS_MS,"[[","archiveType"))[everythingEX]
+    archivesEX[which(archivesEX == 'marnine sediment' | archivesEX == 'marine' | archivesEX == 'TBD')] = 'marine sediment'
     
     for (i in 1:length(TS)) {
       print(TS[[i]]$paleoData_proxy)
@@ -75,8 +102,12 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       }
     }
     proxy = unlist(sapply(TS,"[[","paleoData_proxy"))[inds_ex]
+    proxiesEX = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[everythingEX]
     dfAdd = data.frame(name, lat, lon, archive, proxy)
+    dfAddEX = data.frame(namesEX, latsEX, lonsEX, archivesEX, proxiesEX)
     allDF = rbind(allDF, dfAdd)
+    everythingDF = rbind(everythingDF, dfAddEX)
+  
     
     additions = which(!name %in% names)
     if (length(additions) > 0) {
@@ -84,6 +115,14 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       lons = c(lons, lon[additions])
       names = c(names, name[additions])
       archives = c(archives, archive[additions])
+    }
+    
+    additionsMSEX = which(!namesEX %in% namesMS)
+    if (length(additionsMSEX) > 0) {
+      everything_lats = c(latsMS, latsEX[additionsMSEX])
+      everything_lons = c(lonsMS, lonsEX[additionsMSEX])
+      everything_names = c(namesMS, namesEX[additionsMSEX])
+      everything_archives = c(archivesMS, archivesMS[additionsMSEX])
     }
     
   }
@@ -126,25 +165,29 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     geom_path(aes(x = boundcirc$x, y = sss)) +
       geom_point(aes(x = lons[which(archives == 'midden')], 
                      y = lats[which(archives == 'midden')], 
-                     fill = 'midden'), shape = 23, size = 4) +
+                     fill = 'midden'), shape = 23, size = 2, color = "white") +
       geom_point(aes(x = lons[which(archives == 'marine sediment')], 
                      y = lats[which(archives == 'marine sediment')], 
-                     fill = 'marine sediment'),  shape = 21, size = 4) +
+                     fill = 'marine sediment'),  shape = 21, size = 2, 
+                 color = "white") +
       geom_point(aes(x = lons[which(archives == 'lake sediment')],
                      y = lats[which(archives == 'lake sediment')], 
-                     fill = 'lake sediment'), shape = 22, size = 4) +
+                     fill = 'lake sediment'), shape = 22, size = 2, 
+                 color = "white") +
       geom_point(aes(x = lons[which(archives == 'speleothem')], 
                      y = lats[which(archives == 'speleothem')], 
-                     fill = 'speleothem'), shape = 24, size = 4) +
+                     fill = 'speleothem'), shape = 24, size = 2, 
+                 color = "white") +
       geom_point(aes(x = lons[which(archives == 'glacier ice')], 
                      y = lats[which(archives == 'glacier ice')], 
-                     fill = 'glacier ice'), shape = 21, size = 4) +
+                     fill = 'glacier ice'), shape = 21, size = 2,
+                 color = "white") +
       geom_point(aes(x = lons[which(archives == 'peat')], 
                      y = lats[which(archives == 'peat')], 
-                     fill = 'peat'), shape =22, size = 4) +
+                     fill = 'peat'), shape =22, size = 2, color = "white") +
       geom_point(aes(x = lons[which(archives == 'wood')], 
                      y = lats[which(archives == 'wood')], 
-                     fill = 'wood'), shape = 24, size = 4) +
+                     fill = 'wood'), shape = 24, size = 2, color = "white") +
       scale_fill_manual(name = '', values = c('midden' = col_m[3],
                                               'marine sediment' = col_m[1],
                                               'lake sediment' = col_m[2],
@@ -152,7 +195,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                               'speleothem' = col_m[4],
                                               'glacier ice' = col_m[6],
                                               'peat' = col_m[7]), 
-    guide = guide_legend(override.aes = list(shape = c(21,22,21,23,22,24,24), fill = col_m[c(6,2,1,3,7,4,8)], color = rep('black',7)))) +
+    guide = guide_legend(override.aes = list(shape = c(21,22,21,23,22,24,24), fill = col_m[c(6,2,1,3,7,4,8)], , size = rep(3,8), color = rep('white',7)))) +
     theme_bw() + xlab('Longitude') + ylab('Latitude') +
     theme(plot.title = element_text(hjust = 0.5)) +
     xlim(-180, 180) + ylim(-90, 90) +
@@ -181,28 +224,30 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     geom_path(aes(x = boundcirc$x, y = sss)) +
     geom_point(aes(x = lons[which(archives == 'midden')], 
                    y = lats[which(archives == 'midden')], 
-                   fill = 'midden'), shape = 23, size = 4) +
+                   fill = 'midden'), shape = 23, size = 2, color = "white") +
     geom_point(aes(x = lons[which(archives == 'marine sediment')], 
                    y = lats[which(archives == 'marine sediment')], 
-                   fill = 'marine sediment'),  shape = 21, size = 4) +
+                   fill = 'marine sediment'),  shape = 21, size = 2, 
+               color = "white") +
     geom_point(aes(x = lons[which(archives == 'lake sediment')],
                    y = lats[which(archives == 'lake sediment')], 
-                   fill = 'lake sediment'), shape = 22, size = 4) +
+                   fill = 'lake sediment'), shape = 22, size = 2, 
+               color = "white") +
     geom_point(aes(x = lons[which(archives == 'speleothem')], 
                    y = lats[which(archives == 'speleothem')], 
-                   fill = 'speleothem'), shape = 24, size = 4) +
+                   fill = 'speleothem'), shape = 24, size = 2, color = "white") +
     geom_point(aes(x = lons[which(archives == 'glacier ice')], 
                    y = lats[which(archives == 'glacier ice')], 
-                   fill = 'glacier ice'), shape = 21, size = 4) +
+                   fill = 'glacier ice'), shape = 21, size = 2, color = "white") +
     geom_point(aes(x = lons[which(archives == 'peat')], 
                    y = lats[which(archives == 'peat')], 
-                   fill = 'peat'), shape =22, size = 4) +
+                   fill = 'peat'), shape =22, size = 2, color = "white") +
     geom_point(aes(x = lons[which(archives == 'wood')], 
                    y = lats[which(archives == 'wood')], 
-                   fill = 'wood'), shape = 24, size = 4) +
+                   fill = 'wood'), shape = 24, size = 2, color = "white") +
     geom_point(aes(x = lons[which(archives == 'ice-other')], 
                    y = lats[which(archives == 'ice-other')], 
-                   fill = 'ice-other'), shape = 23, size = 4) +
+                   fill = 'ice-other'), shape = 23, size = 2, color = "white") +
     scale_fill_manual(name = '', values = c('midden' = col_m[3],
                                             'marine sediment' = col_m[1],
                                             'lake sediment' = col_m[2],
@@ -211,8 +256,9 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                             'glacier ice' = col_m[6],
                                             'ice-other'=col_m[9],
                                             'peat' = col_m[7]), 
-                      guide = guide_legend(override.aes = list(shape = c(21,23,22,21,23,22,24,24), fill = col_m[c(6,9,2,1,3,7,4,8)], color = rep('black',8)))) +
-    theme_bw() + xlab('Longitude') + ylab('Latitude') +
+                      guide = guide_legend(override.aes = list(shape = c(21,23,22,21,23,22,24,24), fill = col_m[c(6,9,2,1,3,7,4,8)], size = rep(3,8), color = rep('white',8)))) +
+    theme_bw() + 
+    xlab('Longitude') + ylab('Latitude') +
     theme(plot.title = element_text(hjust = 0.5)) +
     xlim(-180, 180) + ylim(-90, 90) +
     ggtitle('Temperature proxies')
@@ -271,8 +317,10 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   
   if (climateVar == 'T') {
     write.csv(rec_df2, file.path(figDir, 'temperature_records_unique.csv'))
-  } else {
+  } else if (climateVar == "M") {
     write.csv(rec_df2, file.path(figDir, 'moisture_records_unique.csv'))
+  } else {
+    write.csv(rec_df, file.path(figDir, "all_records_unique.csv"))
   }
   
   print("THE END")
