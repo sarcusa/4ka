@@ -5,10 +5,16 @@ BrokenStick_null <- function(data_in, param){
   TS_BS <- data_in
   skipped_records  <- vector()
   
+  cl <- startMPIcluster()
+  registerDoMPI(cl)
+  
+  #Manual
+  #list2env(loading("/projects/pd_lab/sha59/4ka/RData/BS_results_complete.RData"),envir=.GlobalEnv)
+  
   #plan(cluster)
   
   for (i in 1:length(TS_BS)) {
-    #for (i in 1:1) {
+    #for (i in 1:50) {
     print(paste0('RECORD ', i))
     
     TS_BS[[i]]$null_brk_pts = list()
@@ -35,14 +41,12 @@ BrokenStick_null <- function(data_in, param){
       }
     }
     
-    registerDoParallel(cores = param$ncores)
-      
     #cp  <- list()
     #cp.se <- list()
     #brk_dirs  <- list()
       
     cp.out <-foreach(it=1:param$numIt,
-                     .verbose=F,.errorhandling = "pass") %dopar% {
+                     .verbose=T,.errorhandling = "pass") %dopar% {
                        
                        #print(paste0('BS null ITERATION ', it))
                        #for (it in 1:param$numIt) {
@@ -55,14 +59,14 @@ BrokenStick_null <- function(data_in, param){
                        
                        # added on 18-08-20 SA
                        if(is.character(results$cp) | is.na(results$cp)){
-                         cp = NA 
-                         cp.se = NA
+                         CP = NA #was cp
+                         CP.SE = NA #was cp.se
                          brk_dirs = NA
                        
                        }else{
                          
-                         cp = results$cp
-                         cp.se = results$cp.se
+                         CP = results$cp #was cp
+                         CP.SE = results$cp.se #was cp.se
                          
                          slopes = results$o$coefficients[3:(length(results$cp)+2)]
                          brk_dirs = ifelse(slopes > 0, 1, -1)
@@ -70,24 +74,24 @@ BrokenStick_null <- function(data_in, param){
                          
                        }
                                               
-                       return(list(cp = cp, 
-                                   cp.se = cp.se, 
-                                   brk_dirs = brk_dirs))
+                       return(list(c = CP,  #was cp for both
+                                   SE = CP.SE,  #was cp.se for both
+                                   brk = brk_dirs)) #was brk_dirs
                      }    
-    stopImplicitCluster()
-    
-    
-    TS_BS[[i]]$null_brk_pts = lapply(cp.out, `[[`, "cp")
-    TS_BS[[i]]$null_brk_ptsErr = lapply(cp.out, `[[`, "cp.se")
+        
+    TS_BS[[i]]$null_brk_pts = lapply(cp.out, `[[`, "c") #was "cp" instead of 1
+    TS_BS[[i]]$null_brk_ptsErr = lapply(cp.out, `[[`, "SE") #was "cp.se"
     # added on 18-08-20 SA
-    TS_BS[[i]]$null_brk_dirs = lapply(cp.out, `[[`, "brk_dirs")
+    TS_BS[[i]]$null_brk_dirs = lapply(cp.out, `[[`, "brk") #was "brk_dirs"
     
     
   } #end of for loop
   
-  fileName = file.path(mainDir, 'RData', 'BS_results_plusNull.RData')
+  fileName = file.path(mainDir, 'RData', 'BS_results_plusNull_doMPI.RData')
   save(TS_BS, file = fileName)
   write.table(skipped_records, file = file.path(mainDir,"skipped_records_BS.txt"))
+  
+  closeCluster(cl)
   
   return(TS_BS)
   
