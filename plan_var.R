@@ -35,6 +35,7 @@ my_plan <- drake_plan(
   
   prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
                   resources = list(cores = 16)),
+  
   prep_3b = target(TrendChanges_prep2(input_data = prep_3a,
                                       input_param = parameters),
                    resources = list(cores = 32)),
