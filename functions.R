@@ -27,6 +27,7 @@ source('histogram_netPlot_doubleAxis.R')
 source('plotProxyMap.R')
 source('BS_wrapper.R')
 source("runBrokenStick_null_test.R")
+source("baseMapfun.R")
 
 climate_indices <- function(data){
   climInterp1 = sapply(data,"[[","interpretation1_variable")
