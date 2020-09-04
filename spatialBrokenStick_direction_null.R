@@ -196,9 +196,9 @@ spatialBrokenStick <- function(data_in,param, climateVar){
       
       myCol = c('#543005','#bf812d','#dfc27d','#f6e8c3','snow2','#c7eae5','#80cdc1','#35978f','#003c30')
       
-      tryCatch({ s <- geoChronR::baseMap(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F) + 
+      tryCatch({ s <- baseMAP(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F, country.boundaries = F) + 
         geom_tile(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]],width = 5.5,height = 5.5, fill = as.factor(percentEvents_NULL_binned))) + 
-        borders("world", colour="black") + 
+        borders("world", colour="grey70") + 
         geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)]), color='white', size = 3) +
         geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)]), color='white', size = 3) +
         geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)]), color='white', size = 3) +
@@ -208,7 +208,7 @@ spatialBrokenStick <- function(data_in,param, climateVar){
         scale_color_manual(name = '', values = c('no event' = 'black', '+ event' = 'white', '- event' = 'white'),breaks = c('+ event', '- event', 'no event'),guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('blue','tomato4','grey50'),color = c('black','black','black')))) +
         scale_fill_manual(name = '', values = rev(myCol))+
         ggtitle(paste0('BS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$event_window/2/1000, 'ka events'))+
-        geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")   
+        #geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")   
       
     pdf(file.path(bsDir, 'spatial_BS_M', paste0(y,'-', eventYr/1000, '.pdf')))
     plot(s)
@@ -221,9 +221,9 @@ spatialBrokenStick <- function(data_in,param, climateVar){
       
       myCol = c('#67001f','#d6604d','#f4a582','#fddbc7','snow2','#d1e5f0','#92c5de','#4393c3','#053061')
       
-      tryCatch({s <- geoChronR::baseMap(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F) + 
+      tryCatch({s <- baseMAP(lon=0,lat = 0,projection = "mollweide",global = TRUE,map.type = "line",restrict.map.range = F, country.boundaries = F) + 
         geom_tile(aes(x = longitude[locs_binned[,1]], y = latitude[locs_binned[,2]],width = 5.5,height = 5.5, fill = as.factor(percentEvents_NULL_binned))) + 
-        borders("world", colour="black") + 
+        borders("world", colour="grey70") + 
         geom_point(aes(x = allTsLon[which(dirChange == 0)], y = allTsLat[which(dirChange == 0)]), color='white', size = 3) +
         geom_point(aes(x = allTsLon[which(dirChange == 1)], y = allTsLat[which(dirChange == 1)]), color='white', size = 3) +
         geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)]), color='white', size = 3) +
@@ -235,7 +235,7 @@ spatialBrokenStick <- function(data_in,param, climateVar){
                            guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('red','royalblue','grey50'),color = c('black','black','black')))) +
         scale_fill_manual(name = '', values = myCol) +
         ggtitle(paste0('BS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$event_window/2/1000, 'ka events'))+
-        geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")
+        #geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")
       
     pdf(file.path(bsDir, 'spatial_BS_T', paste0(y,'-', eventYr/1000, '.pdf')))
     plot(s)
