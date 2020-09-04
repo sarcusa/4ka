@@ -6,10 +6,10 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   climateVar = input_var
   
   #Manual load
-  #load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
-  #TS_MS = analysis_2b
+  load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
+  TS_MS = analysis_2b
   
-  TS_MS = prep1
+  #TS_MS = prep1
   
   # avoid double-counting sites if they have annual and seasonal records
   for (i in 1:length(TS_MS)) {
@@ -38,13 +38,6 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   archives = unlist(sapply(TS_MS,"[[","archiveType"))[inds]
   archives[which(archives == 'marnine sediment' | archives == 'marine' | archives == 'TBD')] = 'marine sediment'
   
-  everythingMS = which(interps == 'M' | interps == 'P'| interps == 'P-E' | interps ==  'P/E' | interps == 'T' | interps == 'TM')
-  latsMS = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[everythingMS])
-  lonsMS = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[everythingMS])
-  namesMS = unlist(sapply(TS_MS,"[[","dataSetName"))[everythingMS]
-  archivesMS = unlist(sapply(TS_MS,"[[","archiveType"))[everythingMS]
-  archivesMS[which(archivesMS == 'marnine sediment' | archivesMS == 'marine' | archivesMS == 'TBD')] = 'marine sediment'
-  
   for (i in 1:length(TS_MS)) {
     print(TS_MS[[i]]$paleoData_proxy)
     if (length(TS_MS[[i]]$paleoData_proxy) == 0) {
@@ -52,11 +45,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     }
   }
   proxies = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[inds]
-  proxiesMS = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[everythingMS]
   allDF = data.frame(name = names, lat = lats, lon = lons,
                      archive = archives, proxy = proxies)
-  everythingDF = data.frame(name = namesMS, lat = latsMS, lon = lonsMS,
-                            archive = archivesMS, proxy = proxiesMS)
   
   eventYrs = param$eventYrs
   
@@ -88,13 +78,6 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     name = unlist(sapply(TS,"[[","dataSetName"))[inds_ex]
     archive = unlist(sapply(TS,"[[","archiveType"))[inds_ex]
     
-    everythingEX = which(interps == 'M' | interps == 'P'| interps == 'P-E' | interps ==  'P/E' | interp == 'T' | interps == 'TM')
-    latsEX = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[everythingEX])
-    lonsEX = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[everythingEX])
-    namesEX = unlist(sapply(TS_MS,"[[","dataSetName"))[everythingEX]
-    archivesEX = unlist(sapply(TS_MS,"[[","archiveType"))[everythingEX]
-    archivesEX[which(archivesEX == 'marnine sediment' | archivesEX == 'marine' | archivesEX == 'TBD')] = 'marine sediment'
-    
     for (i in 1:length(TS)) {
       print(TS[[i]]$paleoData_proxy)
       if (length(TS[[i]]$paleoData_proxy) == 0) {
@@ -102,13 +85,9 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       }
     }
     proxy = unlist(sapply(TS,"[[","paleoData_proxy"))[inds_ex]
-    proxiesEX = unlist(sapply(TS_MS,"[[","paleoData_proxy"))[everythingEX]
     dfAdd = data.frame(name, lat, lon, archive, proxy)
-    dfAddEX = data.frame(namesEX, latsEX, lonsEX, archivesEX, proxiesEX)
     allDF = rbind(allDF, dfAdd)
-    everythingDF = rbind(everythingDF, dfAddEX)
-  
-    
+        
     additions = which(!name %in% names)
     if (length(additions) > 0) {
       lats = c(lats, lat[additions])
@@ -117,13 +96,6 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       archives = c(archives, archive[additions])
     }
     
-    additionsMSEX = which(!namesEX %in% namesMS)
-    if (length(additionsMSEX) > 0) {
-      everything_lats = c(latsMS, latsEX[additionsMSEX])
-      everything_lons = c(lonsMS, lonsEX[additionsMSEX])
-      everything_names = c(namesMS, namesEX[additionsMSEX])
-      everything_archives = c(archivesMS, archivesMS[additionsMSEX])
-    }
     
   }
   
@@ -160,8 +132,9 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   boundcirc = data.frame(y = sss, 
                          x = c(rep(-180, length.out = length(sss)/2), 
                                rep(180, length.out=length(sss)/2)))
-  tryCatch({t  <- baseMap(c(-180,180), c(-90,90),map.type='line',
-          global=T,projection='mollweide',restrict.map.range=F) + 
+  tryCatch({t  <- baseMAP(c(-180,180), c(-90,90),map.type='line',
+          global=T,projection='mollweide',restrict.map.range=F, 
+          country.boundaries = F) + 
     geom_path(aes(x = boundcirc$x, y = sss)) +
       geom_point(aes(x = lons[which(archives == 'midden')], 
                      y = lats[which(archives == 'midden')], 
@@ -195,11 +168,21 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                               'speleothem' = col_m[4],
                                               'glacier ice' = col_m[6],
                                               'peat' = col_m[7]), 
-    guide = guide_legend(override.aes = list(shape = c(21,22,21,23,22,24,24), fill = col_m[c(6,2,1,3,7,4,8)], , size = rep(3,8), color = rep('white',7)))) +
-    theme_bw() + xlab('Longitude') + ylab('Latitude') +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    xlim(-180, 180) + ylim(-90, 90) +
-    ggtitle('Moisture proxies')
+    guide = guide_legend(override.aes = list(shape = c(21,22,21,23,22,24,24), fill = col_m[c(6,2,1,3,7,4,8)],size = rep(3,7), color = rep('white',7)))) +
+      theme_bw()+
+      theme(plot.title = element_text(hjust = 0.5),
+            axis.ticks = element_blank(), 
+            axis.text.y = element_blank(), 
+            axis.text.x = element_blank(), 
+            axis.title.x = element_blank(), 
+            axis.title.y = element_blank(), 
+            panel.border = element_blank()) +
+      ggtitle('Moisture proxies')
+      
+    #theme_bw() + xlab('Longitude') + ylab('Latitude') +
+    #theme(plot.title = element_text(hjust = 0.5)) +
+    #xlim(-180, 180) + ylim(-90, 90) +
+    #ggtitle('Moisture proxies')
   
   pdf(file.path(figDir, 'moistureProxyMap_v1.pdf'))
   print(t)
@@ -219,8 +202,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                             length.out = length(sss)/2), 
                                         rep(180, length.out=length(sss)/2)))
   
-  tryCatch({t  <- baseMap(c(-180,180), c(-90,90),map.type='line',global=T,
-          projection='mollweide',restrict.map.range=F) + 
+  tryCatch({t  <- baseMAP(c(-180,180), c(-90,90),map.type='line',global=T,
+          projection='mollweide',restrict.map.range=F, country.boundaries = F) + 
     geom_path(aes(x = boundcirc$x, y = sss)) +
     geom_point(aes(x = lons[which(archives == 'midden')], 
                    y = lats[which(archives == 'midden')], 
@@ -257,11 +240,21 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                             'ice-other'=col_m[9],
                                             'peat' = col_m[7]), 
                       guide = guide_legend(override.aes = list(shape = c(21,23,22,21,23,22,24,24), fill = col_m[c(6,9,2,1,3,7,4,8)], size = rep(3,8), color = rep('white',8)))) +
-    theme_bw() + 
-    xlab('Longitude') + ylab('Latitude') +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    xlim(-180, 180) + ylim(-90, 90) +
-    ggtitle('Temperature proxies')
+      theme_bw()+
+      theme(plot.title = element_text(hjust = 0.5),
+            axis.ticks = element_blank(), 
+            axis.text.y = element_blank(), 
+            axis.text.x = element_blank(), 
+            axis.title.x = element_blank(), 
+            axis.title.y = element_blank(), 
+            panel.border = element_blank()) +
+      ggtitle('Temperature proxies')
+    
+    #theme_bw() + 
+    #xlab('Longitude') + ylab('Latitude') +
+    #theme(plot.title = element_text(hjust = 0.5)) +
+    #xlim(-180, 180) + ylim(-90, 90) +
+    #ggtitle('Temperature proxies')
   
   pdf(file.path(figDir, 'temperatureProxyMap_v2.pdf'))
   print(t)
