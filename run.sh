@@ -4,8 +4,8 @@
 #SBATCH --mem=64000
 #SBATCH --mail-type=ALL
 
-module load openmpi
+##module load openmpi
 module load R
-mpirun Rscript make.R
-
+##mpirun Rscript make.R
+srun Rscript make.R
 
