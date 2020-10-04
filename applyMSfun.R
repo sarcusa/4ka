@@ -12,7 +12,8 @@ applyMS <- function(data_in, param){
     age = data_MS[[i]]$age
     vals = data_MS[[i]]$paleoData_values
     
-    output = MS_fun(age, vals, plotOpt = T, figDir = figDir,
+    output = MS_fun(age, vals, plotOpt = T, figDir = figDir, 
+                    maxDiff = param$maxDiff,
                     datNam = data_MS[[i]]$dataSetName, 
                     varNam = data_MS[[i]]$paleoData_variableName)
     
