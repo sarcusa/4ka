@@ -5,13 +5,14 @@ BrokenStick_null <- function(data_in, param){
   TS_BS <- data_in
   skipped_records  <- vector()
   
-  cl <- startMPIcluster()
-  registerDoMPI(cl)
+  #cl <- startMPIcluster()
+  #registerDoMPI(cl)
+  doFuture::registerDoFuture()
   
   #Manual
   #list2env(loading("/projects/pd_lab/sha59/4ka/RData/BS_results_complete.RData"),envir=.GlobalEnv)
   
-  #plan(cluster)
+  future::plan(cluster)
   
   for (i in 1:length(TS_BS)) {
     #for (i in 1:50) {
@@ -91,7 +92,8 @@ BrokenStick_null <- function(data_in, param){
   save(TS_BS, file = fileName)
   write.table(skipped_records, file = file.path(mainDir,"skipped_records_BS.txt"))
   
-  closeCluster(cl)
+  #closeCluster(cl)
+  future::plan(sequential)
   
   return(TS_BS)
   
