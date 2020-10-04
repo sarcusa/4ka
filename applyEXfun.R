@@ -16,8 +16,12 @@ applyEX <- function(data_in, param){
       age = data_EX[[i]]$age
       vals = data_EX[[i]]$paleoData_values
       
+      #test_window = sample(x = seq(400,800,2),size = 1,replace = F)
+      
       results = EX_fun(age, vals, 
-                       event_yr = event_yr, event_window = param$event_window, 
+                       event_yr = event_yr, 
+                       #event_window = test_window,
+                       event_window = param$event_window, 
                        ref_window = param$ref_window, 
                        plotOpt = param$plotOpt, figDir = figDir,
                        datNam = data_EX[[i]]$dataSetName, 
