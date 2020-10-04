@@ -1,4 +1,4 @@
-dir = "/projects/pd_lab/sha59/4ka"
+dir = "/projects/pd_lab/sha59/4ka" #set the directory of the input scripts
 setwd(dir)
 
 #envir <- new.env(parent = globalenv())
