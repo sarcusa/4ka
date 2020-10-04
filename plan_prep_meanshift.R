@@ -1,7 +1,7 @@
 MeanShift_prep <- function(input_data,input_param){
   
   print("Start apply meanshift function")
-  analysis_2a = applyMS(data_in = input_data)
+  analysis_2a = applyMS(data_in = input_data, param = input_param)
   
   out2a = {
     datPath = file.path(createPaths(), 'RData', 'MeanShift.RData')
