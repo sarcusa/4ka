@@ -10,7 +10,7 @@ my_plan <- drake_plan(
                     eventWindow = eventWindow, 
                     CName = CName, CVers = CVers, 
 		    eventDetector = eventDetector, OutDat = OutDat,
-	            ncores = ncores), hpc = FALSE),
+	            ncores = ncores, maxDiff = maxDiff), hpc = FALSE),
 
   data = target(plan_prep(param = parameters), hpc = FALSE),
 
@@ -23,22 +23,24 @@ my_plan <- drake_plan(
   #                       input_var = climate_var),
   #                    transform = cross(
   #                      climate_var = c("T","M","All")),
-  #                    resources = list(cores = 16)),
+  #                   resources = list(cores = 16))
+  #,
   
-  #prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
-  #                resources = list(cores = 32)), 
+  prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
+                  resources = list(cores = 32)), 
   
-  #analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
-  #                       input_var = climate_var),
-  #                    transform = cross(climate_var = c("T","M","All")),
-  #                    resources = list(cores = 16)),
+  analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
+                         input_var = climate_var),
+                      transform = cross(climate_var = c("T","M","All")),
+                      resources = list(cores = 16))
+  #,
   
-  prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
-                  resources = list(cores = 16)),
+  #prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
+  #                resources = list(cores = 16)),
   
-  prep_3b = target(TrendChanges_prep2(input_data = prep_3a,
-                                      input_param = parameters),
-                   resources = list(cores = 32)),
+  #prep_3b = target(TrendChanges_prep2(input_data = prep_3a,
+  #                                    input_param = parameters),
+  #                 resources = list(cores = 32)),
   
   #test = target(BrokenStick_null_test(data_in = prep_3a, param = parameters),
   #              resources = list(cores = 16))
