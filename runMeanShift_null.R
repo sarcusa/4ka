@@ -37,7 +37,8 @@ MeanShift_null <- function(data_in, param){
                     
                     #print(paste0('MS null ITERATION ', it))
                     
-                    output = MS_fun(data_MS[[i]]$age, synthDat[,it])
+                    output = MS_fun(data_MS[[i]]$age, synthDat[,it], 
+                                    maxDiff = param$maxDiff)
                     
                     return(list(sig = output$sig_brks, brk = output$brk_dirs))
                   }
