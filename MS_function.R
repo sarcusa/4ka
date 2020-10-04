@@ -1,4 +1,4 @@
-MS_fun = function(age, vals, maxDiff = 1000, alpha = 0.05, plotOpt = F, gaussOpt = F, figDir = '', datNam = '', varNam = '') {
+MS_fun = function(age, vals, maxDiff, alpha = 0.05, plotOpt = F, gaussOpt = F, figDir = '', datNam = '', varNam = '') {
  ## Written by Hannah Kolus, 09/04/2018 
  ## Searches for mean shifts in the specified record, using the changepoint package function cpt.mean().
  ## In addition, tests for significant differences in means from the results of cpt.mean(), with the 
