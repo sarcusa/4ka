@@ -1,6 +1,10 @@
 createPaths = function() {
   
-  mainDir = dir
+  if(identical(dir,output_destination)){
+    mainDir = dir
+  }else{
+    mainDir = output_destination
+  }
   
   dir.create(mainDir)
   dir.create(file.path(mainDir, 'excursion'))
