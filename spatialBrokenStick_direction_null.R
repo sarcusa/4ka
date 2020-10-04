@@ -8,6 +8,10 @@ spatialBrokenStick <- function(data_in,param, climateVar){
   
   TS_BS_orig = data_in
   
+  #Manual load
+  load("/projects/pd_lab/sha59/4ka/RData/BS_results_plusNull_complete.RData")
+  TS_BS_orig = TS_BS
+  
   for (y in 1:length(eventYrs)) {
     
     TS_BS = TS_BS_orig
@@ -23,6 +27,11 @@ spatialBrokenStick <- function(data_in,param, climateVar){
         print('Out of range')
       }
       
+      #Exclude if the broken stick null resulted in no break points
+      if(!length(TS_BS[[i]]$null_brk_dirs)){
+        TS_BS[[i]]$useBS = 0
+        print("no break points identified previously")
+      }
       
       #Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
       if (length(TS_BS[[i]]$interpretation1_seasonalityGeneral) > 0) {
