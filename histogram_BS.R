@@ -17,6 +17,11 @@ hist_BS <- function(data_in, param, climateVar){
   recordCounts = matrix(NA, nrow = length(param$eventYrs), ncol = 4) # years, all records, + events, - events
   recordCounts[,1] = param$eventYrs
   
+  #manual load
+  #load("/projects/pd_lab/sha59/4ka/RData/BS_results_plusNull_complete.RData")
+  #TS_BS_orig = TS_BS
+  
+  #automatic load
   TS_BS_orig = data_in
   
   for (y in 1:length(param$eventYrs)) {
@@ -35,6 +40,11 @@ hist_BS <- function(data_in, param, climateVar){
           print('Out of range')
         }
         
+        #Exclude if the broken stick null resulted in no break points
+        if(!length(TS_BS[[i]]$null_brk_dirs)){
+          TS_BS[[i]]$useBS = 0
+          print("no break points identified previously")
+        }
         
         # Only include annual, winterOnly, and summerOnly (exclude winter+ and summer+)
         if (length(TS_BS[[i]]$interpretation1_seasonalityGeneral) > 0) {
@@ -106,11 +116,8 @@ hist_BS <- function(data_in, param, climateVar){
     totNullEvents = matrix(0, nrow = length(inds), ncol = param$numIt) 
     for (i in 1:length(inds)) {
       
-      if (eventDetector == 'MS') {
-        nullBreaks = TS[[inds[i]]]$null_sig_brks
-      } else {
-        nullBreaks = TS[[inds[i]]]$null_brk_pts
-      }
+      nullBreaks = TS[[inds[i]]]$null_brk_pts
+      
       nullDirs = TS[[inds[i]]]$null_brk_dirs
       
       for (j in 1:param$numIt) {
