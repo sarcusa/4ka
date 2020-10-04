@@ -49,9 +49,12 @@ Excursion_null <- function(data_in, param){
                       
                       #print(paste('Iteration', it))
                       
+                      #test_window = sample(x = seq(400,800,2),size = 1,                                           replace = F)
+                      
                       results = EX_fun(data_EX[[i]]$age, synthDat[,it], 
                                        event_yr = event_yr, 
                                        event_window = param$event_window, 
+                                       #event_window = test_window,
                                        ref_window = param$ref_window)
                       
                       return(list(null_2 = results[[2]], null_3 = results[[3]]))
