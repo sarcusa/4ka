@@ -83,6 +83,13 @@ histEX <- function(data_in, param, climateVar){
     totNullEvents = matrix(0, nrow = length(inds), ncol = param$numIt) 
     for (i in 1:length(inds)) {
       
+      if(!length(TS[[inds[i]]]$null_events_dir) == param$numIt){
+        
+        add_NA <- rep(NA,param$numIt - length(TS[[inds[i]]]$null_events_dir))
+        TS[[inds[i]]]$null_events_dir  <- c(TS[[inds[i]]]$null_events_dir,add_NA)
+        totNullEvents[i,] = TS[[inds[i]]]$null_events_dir * dirs[i]
+      }
+      
       totNullEvents[i,] = TS[[inds[i]]]$null_events_dir * dirs[i]
       
     }
@@ -93,10 +100,10 @@ histEX <- function(data_in, param, climateVar){
     
   } # end event year loop
    
-  allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
-  posNullQuants = apply(posNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
-  negNullQuants = apply(negNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
-  diffNullQuants = apply(posNullEvents - negNullEvents, 1, function(x) quantile(x, probs = c(0.1, 0.05, 0.01, 0.9, 0.95, 0.99)))
+  allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99),na.rm = T))
+  posNullQuants = apply(posNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99), na.rm = T))
+  negNullQuants = apply(negNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99),na.rm = T))
+  diffNullQuants = apply(posNullEvents - negNullEvents, 1, function(x) quantile(x, probs = c(0.1, 0.05, 0.01, 0.9, 0.95, 0.99),na.rm = T))
   
   output <- list(
     allEvents = allEvents,
