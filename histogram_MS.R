@@ -19,6 +19,7 @@ histogram_MS <- function(data_in, param, climateVar){
   
   if (eventDetector == 'MS') {
     #load(file.path(datDir, 'MS_results_plusNull_complete.RData'))
+    #TS_MS_orig = analysis_2b
     TS_MS_orig = data_in
   } else {
     # broken stick
@@ -56,6 +57,8 @@ histogram_MS <- function(data_in, param, climateVar){
       
       # Assign event occurrence
       for (i in 1:length(TS_MS)) {
+        
+        #param$eventWindow = sample(x = seq(99.9,299.9,50), size = 1, replace = F)
         
         TS_MS[[i]]$eventMS = 0
         TS_MS[[i]]$dirMS = 0
@@ -125,7 +128,7 @@ histogram_MS <- function(data_in, param, climateVar){
     }
     interps = interps[inds]
     
-    # calculate the climate event direction based on the proxy climate dir and event dir
+    # calculate the climate event direction based on the proxy climate dir and event dir: checks if the interpretation direction is the same as in the new
     dirs = unlist(sapply(TS,"[[","interpretation1_interpDirection"))[inds]
     dirs[dirs == 'positive' | dirs == 'positve' | dirs == 'postitive'] = 1
     dirs[dirs == 'negative'] = -1
@@ -157,6 +160,8 @@ histogram_MS <- function(data_in, param, climateVar){
       nullDirs = TS[[inds[i]]]$null_brk_dirs
       
       for (j in 1:param$numIt) {
+        
+        #param$eventWindow = sample(seq(99.9,299.9,1), size = 1,replace = F)
         
         eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow & nullBreaks[[j]] <= eventYr + param$eventWindow)
         
