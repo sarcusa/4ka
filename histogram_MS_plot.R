@@ -14,7 +14,7 @@ hist_MS_plot <- function(data_in,param, climateVar){
   negFill = ifelse(climateVar == 'M', '#bf812d', '#4393c3')
   quantCol = c('#fed976', '#fd8d3c', '#fc4e2a')
   
-  eventYrs = param$eventYrs
+  eventYrs = param$eventYrs[1:25]
   allEvents = data_in$allEvents
   allNullQuants = data_in$allNullQuants
   negEvents = data_in$negEvents
@@ -38,10 +38,10 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', 
+        #geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -51,11 +51,11 @@ hist_MS_plot <- function(data_in,param, climateVar){
         ggtitle(paste0(eventDetectorStr, ':\nAll events'))
       
       d  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                               fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
-                           breaks = eventYrs[seq(1,25,by=2)], 
-                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                  color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
+                        breaks = eventYrs[seq(1,25,by=2)], 
+                        labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
         theme_bw() + 
         theme(legend.position = "none")
@@ -76,11 +76,11 @@ hist_MS_plot <- function(data_in,param, climateVar){
     } else {
       
       b  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                 fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
-                           breaks = eventYrs[seq(1,25,by=2)], 
-                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                  color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
+                        breaks = eventYrs[seq(1,25,by=2)], 
+                        labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
         theme_bw() + 
         theme(legend.position = "none")
@@ -90,10 +90,10 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', 
+        #geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -104,10 +104,10 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', 
+        #geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -118,13 +118,13 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = negNullQuants[1,], color = '0.9')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[2,], color = '0.95')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[3,], color = '0.99')) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
         scale_color_manual(name = 'Quantile', 
                            values = c('0.9' = quantCol[1], 
                                       '0.95' = quantCol[2], '0.99' = quantCol[3])) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5),
@@ -148,11 +148,11 @@ hist_MS_plot <- function(data_in,param, climateVar){
       ## NET HISTOGRAM
       
       b  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                 fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
-                           breaks = eventYrs[seq(1,25,by=2)], 
-                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                  color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
+                        breaks = eventYrs[seq(1,25,by=2)], 
+                        labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
         theme_bw() + 
         theme(legend.position = "none")
@@ -168,16 +168,16 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', 
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -188,10 +188,10 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', 
+        #geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -202,13 +202,13 @@ hist_MS_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = negNullQuants[1,], color = '0.9')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[2,], color = '0.95')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[3,], color = '0.99')) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
         scale_color_manual(name = 'Quantile',
                            values = c('0.9' = quantCol[1], 
                                       '0.95' = quantCol[2], '0.99' = quantCol[3])) +
-        scale_x_continuous(name = 'ky BP', 
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
@@ -243,7 +243,7 @@ hist_MS_plot <- function(data_in,param, climateVar){
       negEvents_T_MS = negEvents
       quants_T_MS = diffNullQuants
       
-      save(posDiff_T_MS, negDiff_T_MS, quants_T_MS,
+      save(posDiff_T_MS, negDiff_T_MS, quants_T_MS,posEvents_T_MS,negEvents_T_MS,
            file = file.path(datDir, 'histogram_T_MS.RData'))
       save(posEvents_T_MS, negEvents_T_MS, 
            file = file.path(datDir, 'histogram_ALL_T_MS.RData'))
@@ -261,7 +261,7 @@ hist_MS_plot <- function(data_in,param, climateVar){
       negEvents_M_MS = negEvents
       quants_M_MS = diffNullQuants
       
-      save(posDiff_M_MS, negDiff_M_MS, quants_M_MS,
+      save(posDiff_M_MS, negDiff_M_MS, quants_M_MS,posEvents_M_MS,negEvents_M_MS,
            file = file.path(datDir, 'histogram_M_MS.RData'))
       save(posEvents_M_MS, negEvents_M_MS, file = 
              file.path(datDir, 'histogram_ALL_M_MS.RData'))
