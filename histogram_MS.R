@@ -5,6 +5,8 @@ histogram_MS <- function(data_in, param, climateVar){
   figDir = file.path(createPaths(), 'histograms')
   datDir = file.path(createPaths(), 'RData')
   
+  param$eventYrs = param$eventYrs[1:25]
+  
   allNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   posNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   negNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
@@ -37,6 +39,8 @@ histogram_MS <- function(data_in, param, climateVar){
       
       TS_MS = TS_MS_orig
       
+      #if(!length(TS_MS) == 0 & !length(TS_MS) == 1){
+      
       for (i in 1:length(TS_MS)) {
         # Filter records that don't contain event year in age range
         if (min(TS_MS[[i]]$age) > eventYr || max(TS_MS[[i]]$age) < eventYr) {
@@ -58,18 +62,20 @@ histogram_MS <- function(data_in, param, climateVar){
       # Assign event occurrence
       for (i in 1:length(TS_MS)) {
         
-        #param$eventWindow = sample(x = seq(99.9,299.9,50), size = 1, replace = F)
-        
+                      
         TS_MS[[i]]$eventMS = 0
         TS_MS[[i]]$dirMS = 0
-        if (!is.na(TS_MS[[i]]$sig_brks) && any(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)) {
+        if (!is.na(TS_MS[[i]]$sig_brks) && any(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow )) {
           TS_MS[[i]]$eventMS = 1
-          eve_i = which(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)
+          eve_i = which(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow  & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)
           TS_MS[[i]]$dirMS = TS_MS[[i]]$brk_dirs[eve_i]
         }
         
       }
       TS = TS_MS
+      
+    #}else{}
+      
     } else { ## BROKEN STICK PROCESSING
       TS_BS = TS_BS_orig
       
@@ -141,6 +147,37 @@ histogram_MS <- function(data_in, param, climateVar){
     }
     dirChange = dirs * dirEvents                          # (0, 1, -1): (no, positive, negative) climate event
     
+    # add these for printing table of results by site
+    names = unlist(sapply(TS, '[[', 'dataSetName'))[inds]
+    SiteName = unlist(sapply(TS, '[[', 'geo_siteName'))[inds]
+    lat = unlist(sapply(TS, '[[', 'geo_latitude'))[inds]
+    lon = unlist(sapply(TS, '[[', 'geo_longitude'))[inds]
+    ArchiveType = unlist(sapply(TS, '[[', 'archiveType'))[inds]
+    ProxyType = unlist(sapply(TS, '[[', 'paleoData_proxyGeneral'))[inds]
+    for (i in 1:length(TS)) {
+      if (length(TS[[i]]$pub1_doi) == 0) {
+        TS[[i]]$pub1_doi = NA
+      }
+    }
+    for (i in 1:length(TS)) {
+      if (length(TS[[i]]$originalDataUrl) == 0) {
+        TS[[i]]$originalDataUrl = NA
+      }
+    } 
+    for(i in 1:length(TS)){ # problem with this specific reference
+      if(TS[[i]]$paleoData_TSid == "RyLPf9ScmVz"){
+        TS[[i]]$pub1_doi = NA
+      }
+    }
+    doi = unlist(sapply(TS, '[[', 'pub1_doi'))[inds]
+    TSid = unlist(sapply(TS, '[[', 'paleoData_TSid'))[inds]
+    Original = unlist(sapply(TS, '[[', 'originalDataUrl'))[inds]
+    
+    # save table of results by site
+    event_by_site_df = data.frame(TVerseID = TSid, Dataset = names, Site = SiteName, Lat = lat, Lon = lon, Event = dirChange,Year = rep(eventYr, length(names)), Var = rep(climateVar, length(names)), Archive = ArchiveType, Proxy = ProxyType, OriginalURL = Original, DOI = doi)
+    write.table(event_by_site_df, file = file.path(datDir, paste0('event_each_site_MS_',climateVar,'.csv')), append = T,row.names = F, col.names = F, sep = ',')
+    
+      
     # store real events summary for the year
     allEvents[y] = sum(events == 1) / length(events)
     posEvents[y] = sum(dirChange == 1) / length(events)
@@ -161,9 +198,9 @@ histogram_MS <- function(data_in, param, climateVar){
       
       for (j in 1:param$numIt) {
         
-        #param$eventWindow = sample(seq(99.9,299.9,1), size = 1,replace = F)
-        
-        eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow & nullBreaks[[j]] <= eventYr + param$eventWindow)
+        #sensitivity testing
+                
+        eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow  & nullBreaks[[j]] <= eventYr + param$eventWindow )
         
         if (length(eventInd) > 0) {
           
