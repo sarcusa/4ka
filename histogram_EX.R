@@ -2,6 +2,8 @@ histEX <- function(data_in, param, climateVar){
   
   dataDir = file.path(createPaths(), 'RData')
   
+  param$eventYrs = param$eventYrs[1:25]
+  
   allNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   posNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   negNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
@@ -21,6 +23,8 @@ histEX <- function(data_in, param, climateVar){
     print(paste('Year:', eventYr))
     
     list2env(loading(file.path(dataDir, paste0('EX_results_plusNull_complete_', eventYr/1000, '.RData'))),envir=.GlobalEnv)
+    
+    if(!length(data_EX) == 0 & !length(data_EX) == 1){
     
     for (i in 1:length(data_EX)) {
       
@@ -45,19 +49,32 @@ histEX <- function(data_in, param, climateVar){
       inds = 1:length(interps)
     }
     
+    if(!length(inds) == 0){
+    
     events = as.numeric(sapply(TS,"[[","eventEX"))[inds]
     interps = interps[inds]
     
     # add these for printing table of results by site
     names = unlist(sapply(TS, '[[', 'dataSetName'))[inds]
+    SiteName = unlist(sapply(TS, '[[', 'geo_siteName'))[inds]
     lat = unlist(sapply(TS, '[[', 'geo_latitude'))[inds]
     lon = unlist(sapply(TS, '[[', 'geo_longitude'))[inds]
+    ArchiveType = unlist(sapply(TS, '[[', 'archiveType'))[inds]
+    ProxyType = unlist(sapply(TS, '[[', 'paleoData_proxyGeneral'))[inds]
     for (i in 1:length(TS)) {
       if (length(TS[[i]]$pub1_doi) == 0) {
         TS[[i]]$pub1_doi = NA
       }
+      
     }
+    for (i in 1:length(TS)) {
+      if (length(TS[[i]]$originalDataUrl) == 0) {
+        TS[[i]]$originalDataUrl = NA
+      }
+    }    
     doi = unlist(sapply(TS, '[[', 'pub1_doi'))[inds]
+    TSid = unlist(sapply(TS, '[[', 'paleoData_TSid'))[inds]
+    Original = unlist(sapply(TS, '[[', 'originalDataUrl'))[inds]
     
     # calculate the climate event direction based on the proxy climate dir and event dir
     dirs = unlist(sapply(TS,"[[","interpretation1_interpDirection"))[inds]
@@ -69,8 +86,8 @@ histEX <- function(data_in, param, climateVar){
     dirChange = dirs * dirEvents  #(0, 1, -1):(no, positive, negative) climate event
     
     # save table of results by site
-    event_by_site_df = data.frame(Site = names, Lat = lat, Lon = lon, Event = dirChange,Year = rep(eventYr, length(names)), Var = rep(climateVar, length(names)),DOI = doi)
-    write.table(event_by_site_df, file = file.path(dataDir, 'event_each_site_EX.csv'), append = T,row.names = F, col.names = F, sep = ',')
+    event_by_site_df = data.frame(TVerseID = TSid, Dataset = names, Site = SiteName, Lat = lat, Lon = lon, Event = dirChange,Year = rep(eventYr, length(names)), Var = rep(climateVar, length(names)), Archive = ArchiveType, Proxy = ProxyType, OriginalURL = Original, DOI = doi)
+    write.table(event_by_site_df, file = file.path(dataDir, paste0('event_each_site_EX_',climateVar,'.csv')), append = T,row.names = F, col.names = F, sep = ',')
     
     # store real events summary for the year
     allEvents[y] = sum(events == 1) / length(events)
@@ -97,6 +114,27 @@ histEX <- function(data_in, param, climateVar){
     allNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x != 0)) / length(inds)
     posNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == 1)) / length(inds)
     negNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == -1)) / length(inds)
+    
+    } else {
+      
+      print(paste0("no ",climateVar, " variable found"))
+      allNullEvents[y,] = NA
+      posNullEvents[y,] = NA
+      negNullEvents[y,] = NA 
+    }# end of second ifelse
+    
+      
+    }else{
+      
+      
+      allNullEvents[y,] = NA
+      posNullEvents[y,] = NA
+      negNullEvents[y,] = NA
+      
+    } # end of first ifelse 
+      
+   
+
     
   } # end event year loop
    
