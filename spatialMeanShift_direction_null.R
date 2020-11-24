@@ -7,8 +7,8 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
   TS_MS_orig = data_in
   
   # Manual
-  load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
-  TS_MS_orig = analysis_2b
+  #load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
+  #TS_MS_orig = analysis_2b
   
   for (y in 1:length(param$eventYrs)) {
     
@@ -42,9 +42,9 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
       
       TS_MS[[i]]$eventMS = 0
       TS_MS[[i]]$dirMS = 0
-      if (!is.na(TS_MS[[i]]$sig_brks) && any(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)) {
+      if (!is.na(TS_MS[[i]]$sig_brks) && any(TS_MS[[i]]$sig_brks >= eventYr -  param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr +  param$eventWindow)) {
         TS_MS[[i]]$eventMS = 1
-        eve_i = which(TS_MS[[i]]$sig_brks >= eventYr - param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr + param$eventWindow)
+        eve_i = which(TS_MS[[i]]$sig_brks >= eventYr -  param$eventWindow & TS_MS[[i]]$sig_brks <= eventYr +  param$eventWindow)
         TS_MS[[i]]$dirMS = TS_MS[[i]]$brk_dirs[eve_i]
       }
       
@@ -96,6 +96,8 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
       # if no breaks are found in any iteration, nullBreaks is just an empty list and will break code
       if (length(nullBreaks) > 0) {
         for (j in 1:param$numIt) {
+          
+                   
           
           eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow & nullBreaks[[j]] <= eventYr + param$eventWindow)
           
