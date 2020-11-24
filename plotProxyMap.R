@@ -1,4 +1,4 @@
-ProxyMap  <- function(prep1, prep2, param, input_var){
+ProxyMap  <- function(prep1, prep2, param, input_var,data_in){
   
   datDir = file.path(createPaths(), 'RData')
   figDir = file.path(createPaths(), 'histograms')
@@ -6,11 +6,13 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   climateVar = input_var
   
   #Manual load
-  load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
-  TS_MS = analysis_2b
-  
+  #load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
+  #TS_MS = data_MS
+    
   # Uncheck for automatic
-  #TS_MS = prep1
+  TS_MS = prep1
+  
+  Names  <- pullTsVariable(data_in, "paleoData_TSid")
   
   # avoid double-counting sites if they have annual and seasonal records
   for (i in 1:length(TS_MS)) {
@@ -34,14 +36,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     inds = which(interps == 'T' | interps == 'TM')
   
   }
-  TS_all  <- TS_MS
-  for(i in 1:length(TS_all)){
-    TS_all[[i]]$plot <- -1
-  }
-  for(i in 1:length(inds)){
-  TS_all[[inds[i]]]$plot <- 1
-  }
-  
+    
   lats = as.numeric(unlist(sapply(TS_MS,"[[","geo_latitude"))[inds])
   lons = as.numeric(unlist(sapply(TS_MS,"[[","geo_longitude"))[inds])
   names = unlist(sapply(TS_MS,"[[","dataSetName"))[inds]
@@ -63,6 +58,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   }
   proxies = unlist(sapply(TS_MS,"[[","paleoData_proxyGeneral"))[inds]
   maxYrs = unlist(sapply(TS_MS, "[[", "maxYear"))[inds]
+  TverseIDs = unlist(sapply(TS_MS, "[[", "paleoData_TSid"))[inds]
   
   missing_maxYr  <- vector()
   for (i in 1:length(TS_MS)) {
@@ -71,10 +67,9 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     }
   }
   
-  
-  
   allDF = data.frame(name = names, lat = lats, lon = lons,
-                     archive = archives, proxy = proxies, maxYr = maxYrs)
+                     archive = archives, proxy = proxies, maxYr = maxYrs, 
+                     ID = TverseIDs)
   
   eventYrs = param$eventYrs
   
@@ -101,15 +96,6 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       inds_ex = which(interp == 'T' | interp == 'TM' | interp == 'M' | interp == 'P'| interp == 'P-E' | interp ==  'P/E')
     }
       
-    test <- which(inds_ex %in% inds)
-    if(!length(test) == length(inds_ex)){
-      for(i in 1:length(inds_ex)){
-        if(!inds_ex[i] %in% inds){
-          TS_all[[inds_ex[i]]]$plot <- 1 
-          print(paste0("adding ",TS_all[[inds_ex[i]]]$dataSetName))
-        }
-      }
-    }
     
     lat = as.numeric(unlist(sapply(TS,"[[","geo_latitude"))[inds_ex])
     lon = as.numeric(unlist(sapply(TS,"[[","geo_longitude"))[inds_ex])
@@ -130,17 +116,17 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       }
     }
     proxy = unlist(sapply(TS,"[[","paleoData_proxyGeneral"))[inds_ex]
-    
-    maxYr = unlist(sapply(TS_MS, "[[", "maxYear"))[inds_ex]
+    ID = unlist(sapply(TS, "[[", "paleoData_TSid"))[inds_ex]
+    maxYr = unlist(sapply(TS, "[[", "maxYear"))[inds_ex]
     
     more_maxYrs  <- vector()
-    for (i in 1:length(TS_MS)) {
-      if(length(TS_MS[[i]]$maxYear) == 0){
-        missing_maxYr[i] = TS_MS[[i]]$dataSetName
+    for (i in 1:length(TS)) {
+      if(length(TS[[i]]$maxYear) == 0){
+        missing_maxYr[i] = TS[[i]]$dataSetName
       }
     }
     
-    dfAdd = data.frame(name, lat, lon, archive, proxy, maxYr)
+    dfAdd = data.frame(name, lat, lon, archive, proxy, maxYr, ID)
     allDF = rbind(allDF, dfAdd)
         
     additions = which(!name %in% names)
@@ -152,6 +138,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
       proxies = c(proxies, proxy[additions]) # added 09-18-20 
       missing_proxies = c(missing_proxies, more_proxies[additions])#added 09-18-20
       maxYrs = c(maxYrs, more_maxYrs[additions]) #added 09-18-20
+      TverseIDs = c(TverseIDs, ID[additions])
     }
     
     
@@ -176,7 +163,15 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   lats = lats[which(!is.na(archives))]
   archives = archives[which(!is.na(archives))]
   maxYear = maxYrs[which(!is.na(archives))]
+  ID = TverseIDs[which(!is.na(TverseIDs))]
   unique(archives)
+  
+  index_all <- vector()
+  for(i in 1:length(ID)){
+    ind <- which(ID[i] == Names)
+    index_all[i] <- ind
+  }
+  TS_all <- data_in[index_all]
   
   df = data.frame(lats, lons, archives, maxYear)
   col_m = c('#1c9099', '#08519c', '#810f7c', '#a63603', '#006d2c', '#c6dbef', '#f16913', '#74c476', '#8c96c6')
@@ -193,8 +188,6 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     
   if (climateVar == 'M') {
   
-    
-    
     
   ## Moisture
   sss = c(seq(-90,90), seq(90,-90, by = -1))
@@ -262,7 +255,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   
   }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
   
-  Time.plot <- plotTimeAvailabilityTs(TS = filterTs(TS_all, expression = 'plot == 1'), group.var = "archiveType")+
+  Time.plot <- plotTimeAvailabilityTs(TS_all, group.var = "archiveType")+
+    scale_y_continuous(limits = c(0,800),breaks = c(200, 400, 600,800))+  
     scale_fill_manual(name = '', values = c('Midden' = col_m[3],
                                             'MarineSediment' = col_m[1],
                                             'LakeSediment' = col_m[2],
@@ -352,7 +346,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
   
   }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
   
-  Time.plot <- plotTimeAvailabilityTs(TS = filterTs(TS_all, expression = 'plot == 1'), group.var = "archiveType")+
+  Time.plot <- plotTimeAvailabilityTs(TS_all,group.var = "archiveType")+
+    scale_y_continuous(limits = c(0,800),breaks = c(200, 400, 600,800))+
     scale_fill_manual(name = '', values = c('Midden' = col_m[3],
                                             'MarineSediment' = col_m[1],
                                             'LakeSediment' = col_m[2],
@@ -452,14 +447,14 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                 geom_point(aes(x = lons[which(proxies == 'other microfossil')], 
                                y = lats[which(proxies == 'other microfossil')], 
                                fill = 'other microfossil'), shape = 23, size = 2, color = "white") +
-                geom_point(aes(x = lons[which(proxies == 'alkenone')], 
-                               y = lats[which(proxies == 'alkenone')], 
-                               fill = 'alkenone'),  shape = 21, size = 2, 
+                geom_point(aes(x = lons[which(proxies == 'hybrid')], 
+                               y = lats[which(proxies == 'hybrid')], 
+                               fill = 'hybrid'),  shape = 24, size = 2, 
                            color = "white") +
-                geom_point(aes(x = lons[which(proxies == 'Mg/Ca')],
-                               y = lats[which(proxies == 'Mg/Ca')], 
-                               fill = 'Mg/Ca'), shape = 22, size = 2, 
-                           color = "white") +
+                #geom_point(aes(x = lons[which(proxies == 'Mg/Ca')],
+                #               y = lats[which(proxies == 'Mg/Ca')], 
+                #               fill = 'Mg/Ca'), shape = 22, size = 2, 
+                #           color = "white") +
                 geom_point(aes(x = lons[which(proxies == 'pollen')], 
                                y = lats[which(proxies == 'pollen')], 
                                fill = 'pollen'), shape = 24, size = 2, 
@@ -474,28 +469,28 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                 geom_point(aes(x = lons[which(proxies == 'other ice')], 
                                y = lats[which(proxies == 'other ice')], 
                                fill = 'other ice'), shape = 24, size = 2, color = "white") +
-                geom_point(aes(x = lons[which(proxies == 'physical')], 
-                               y = lats[which(proxies == 'physical')], 
-                               fill = 'physical'), shape = 23, size = 2, color = "white")+
+                #geom_point(aes(x = lons[which(proxies == 'physical')], 
+                #               y = lats[which(proxies == 'physical')], 
+                #               fill = 'physical'), shape = 23, size = 2, color = "white")+
                 geom_point(aes(x = lons[which(proxies == 'biophysical')], 
                                y = lats[which(proxies == 'biophysical')], 
                                fill = 'biophysical'), shape = 23, size = 2, color = "white")+
                 
-                geom_point(aes(x = lons[which(proxies == 'diatom')], 
-                               y = lats[which(proxies == 'diatom')], 
-                               fill = 'diatom'), shape = 25, size = 2, color = "white")+
+               # geom_point(aes(x = lons[which(proxies == 'diatom')], 
+               #                y = lats[which(proxies == 'diatom')], 
+               #                fill = 'diatom'), shape = 25, size = 2, color = "white")+
                 
                 scale_fill_manual(name = '', values = c('pollen' = col_m[8],
                                                         'isotope' = col_m[6],
                                               'other microfossil' = col_m[3],
-                                                        'physical' = col_m[8],
+                                              #          'physical' = col_m[8],
                                                         'biophysical' = col_m[5],
-                                                        'diatom' = col_m[2],
-                                                        'Mg/Ca' = col_m[2], 
+                                              #          'diatom' = col_m[2],
+                                              #          'Mg/Ca' = col_m[2], 
                                   'chironomid' = col_m[4],
                                   'other ice' = col_m[9],
-                                  'alkenone' = col_m[1]),
-                                  guide = guide_legend(override.aes = list(shape = c(21,23,21,25,22,22,24,23,23,24), fill = col_m[c(1,5,4,2,6,2,9,3,8,8)],size = rep(3,10), color = rep('white',10)))) +
+                                  'hybrid' = col_m[1]),
+                                  guide = guide_legend(override.aes = list(shape = c(23,21,24,22,24,23,24), fill = col_m[c(5,4,1,6,9,3,8)],size = rep(3,7), color = rep('white',7)))) +
                 theme_bw()+
                 theme(plot.title = element_text(hjust = 0.5),
                       axis.ticks = element_blank(), 
@@ -513,19 +508,18 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                           
     }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
     
-    Time.plot2 <- plotTimeAvailabilityTs(TS = filterTs(TS_all, expression = 'plot == 1'), group.var = "paleoData_proxyGeneral")+
+    Time.plot2 <- plotTimeAvailabilityTs(TS_all, group.var = "paleoData_proxyGeneral")+
       scale_fill_manual(name = '', values = c('pollen' = col_m[8],
                                               'isotope' = col_m[6],
                                               'other microfossil' = col_m[3],
-                                              'physical' = col_m[8],
+                                              #'physical' = col_m[8],
                                               'biophysical' = col_m[5],
-                                              'diatom' = col_m[2],
-                                              'Mg/Ca' = col_m[2], 
+                                              #'diatom' = col_m[2],
+                                              #'Mg/Ca' = col_m[2], 
                                               'chironomid' = col_m[4],
                                               'other ice' = col_m[9],
-                                              'alkenone' = col_m[1],
-                                              'NULL' = ""),
-                        guide = guide_legend(override.aes = list(fill = col_m[c(1,5,4,2,6,2,9,3,8,8)])))+
+                                              'hybrid' = col_m[1]),
+                        guide = guide_legend(override.aes = list(fill = col_m[c(5,4,1,6,9,3,8)])))+
       theme_bw()
     
     pdf(file.path(figDir, 'MoistureProxyTime.pdf'))
@@ -574,11 +568,10 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                 geom_point(aes(x = lons[which(proxies == 'biophysical')], 
                                y = lats[which(proxies == 'biophysical')], 
                                fill = 'biophysical'), shape = 23, size = 2, color = "white")+
-                geom_point(aes(x = lons[which(proxies == 'GDGT')], 
-                               y = lats[which(proxies == 'GDGT')], 
-                               fill = 'GDGT'), shape = 25, size = 2, color = "white")+
-                scale_fill_manual(name = '', values = c('other microfossil' = col_m[3],'alkenone' = col_m[1],'Mg/Ca' = col_m[2],'pollen' = col_m[8],'chironomid' = col_m[4],'isotope' = col_m[6],'other ice'=col_m[9],'other biomarker' = col_m[7], 'biophysical' = col_m[5], 'GDGT' = col_m[3]), 
-                                  guide = guide_legend(override.aes = list(shape = c(21,23,21,25,22,22,24,24,23,24), fill = col_m[c(1,5,4,3,6,2,7,9,3,8)], size = rep(3,10), color = rep('white',10)))) +
+                #geom_point(aes(x = lons[which(proxies == 'GDGT')], 
+                #               y = lats[which(proxies == 'GDGT')], 
+                #               fill = 'GDGT'), shape = 25, size = 2, color = "white")+
+                scale_fill_manual(name = '', values = c('other microfossil' = col_m[3],'alkenone' = col_m[1],'Mg/Ca' = col_m[2],'pollen' = col_m[8],'chironomid' = col_m[4],'isotope' = col_m[6],'other ice'=col_m[9],'other biomarker' = col_m[7], 'biophysical' = col_m[5]),guide = guide_legend(override.aes = list(shape = c(21,23,21,22,22,24,24,23,24), fill = col_m[c(1,5,4,6,2,7,9,3,8)], size = rep(3,9), color = rep('white',9)))) +
                 theme_bw()+
                 theme(plot.title = element_text(hjust = 0.5),
                       axis.ticks = element_blank(), 
@@ -596,7 +589,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                            
     }, error = function(e){cat("Error:", conditionMessage(e), " no plot was produced ")})
     
-    Time.plot2 <- plotTimeAvailabilityTs(TS = filterTs(TS_all, expression = 'plot == 1'), group.var = "paleoData_proxyGeneral")+
+    Time.plot2 <- plotTimeAvailabilityTs(TS_all, group.var = "paleoData_proxyGeneral")+scale_y_continuous(limits = c(0,800),breaks = c(200, 400, 600,800))+
       scale_fill_manual(name = '', values = c('other microfossil' = col_m[3],
                                               'alkenone' = col_m[1],
                                               'Mg/Ca' = col_m[2],
@@ -605,9 +598,8 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
                                               'isotope' = col_m[6],
                                               'other ice'=col_m[9],
                                               'other biomarker' = col_m[7],
-                                              'biophysical' = col_m[5],
-                                              'GDGT' = col_m[3]), 
-                        guide = guide_legend(override.aes = list(fill = col_m[c(1,5,4,3,6,2,7,9,3,8)]))) +
+                                              'biophysical' = col_m[5]), 
+                        guide = guide_legend(override.aes = list(fill = col_m[c(1,5,4,6,2,7,9,3,8)]))) +
       theme_bw()
     
     pdf(file.path(figDir, 'TemperatureProxyTime.pdf'))
@@ -616,67 +608,7 @@ ProxyMap  <- function(prep1, prep2, param, input_var){
     
   }
   
-  # Sum these categories for temperature and moisture
-  print(paste('other microfossil:', length(proxies[which(proxies == 'other microfossil')])))
-  print(paste('alkenone:', 
-              length(proxies[which(proxies == 'alkenone')])))
-  print(paste('Mg/Ca:', 
-              length(proxies[which(proxies == 'Mg/Ca')])))
-  print(paste('pollen:', length(proxies[which(proxies == 'pollen')])))
-  print(paste('chironomid:', length(proxies[which(proxies == 'chironomid')])))
-  print(paste('isotope:', length(proxies[which(proxies == 'isotope')])))
-  print(paste('other ice:', length(proxies[which(proxies == 'other ice')])))
-  print(paste('other biomarker:', length(proxies[which(proxies == 'other biomarker')])))
-  print(paste('biophysical:', length(proxies[which(proxies == 'biophysical')])))
-  print(paste('GDGT:', length(proxies[which(proxies == 'GDGT')])))
-  print(paste('physical:', length(proxies[which(proxies == 'physical')])))
-  print(paste('diatom:', length(proxies[which(proxies == 'diatom')])))
-  print(paste('Total proxies:', length(proxies)))
-  print(paste('Total sites:', length(unique(names))))
-  
-  prox = c('other microfossil','alkenone', 'Mg/Ca','pollen','chironomid','isotope', 'other ice ','other biomarker','biophysical','GDGT', 'physical' , 'diatom','records_proxies','sites')
-  num_prox = c(length(proxies[which(proxies == 'other microfossil')]),
-               length(proxies[which(proxies == 'alkenone')]),
-               length(proxies[which(proxies == 'Mg/Ca')]),
-               length(proxies[which(proxies == 'pollen')]),
-               length(proxies[which(proxies == 'chironomid')]),
-               length(proxies[which(proxies == 'isotope')]),
-               length(proxies[which(proxies == 'other ice')]),
-               length(proxies[which(proxies == 'other biomarker')]),
-               length(proxies[which(proxies == 'biophysical')]),
-               length(proxies[which(proxies == 'GDGT')]),
-               length(proxies[which(proxies == 'physical')]),
-               length(proxies[which(proxies == 'diatom')]),
-                length(proxies),length(unique(names)))
-  rec_df = data.frame(prox, num_prox)
-  
-  # ONLY UNIQUE SITES
-  names_unique_inds = order(names)[!duplicated(sort(names))]
-  names_unique = names[names_unique_inds]
-  proxies2 = proxies[names_unique_inds]
-  num_prox2 = c(length(proxies2[which(proxies2 == 'other microfossil')]),
-                length(proxies2[which(proxies2 == 'alkenone')]),
-                 length(proxies2[which(proxies2 == 'Mg/Ca')]),
-                 length(proxies2[which(proxies2 == 'pollen')]),
-                 length(proxies2[which(proxies2 == 'chironomid')]),
-                 length(proxies2[which(proxies2 == 'isotope')]),
-                length(proxies2[which(proxies2 == 'other ice')]),
-                 length(proxies2[which(proxies2 == 'other biomarker')]),
-                 length(proxies2[which(proxies2 == 'biophysical')]),
-                 length(proxies2[which(proxies2 == 'GDGT')]),
-                length(proxies2[which(proxies2 == 'physical')]),
-                length(proxies2[which(proxies2 == 'diatom')]),
-                 length(proxies2),length(unique(names)))
-  rec_df2 = data.frame(prox, num_prox2)
-  
-  if (climateVar == 'T') {
-    write.csv(rec_df2, file.path(figDir, 'temperature_records_proxies_unique.csv'))
-  } else if (climateVar == "M") {
-    write.csv(rec_df2, file.path(figDir, 'moisture_records_proxies_unique.csv'))
-  } else {
-    write.csv(rec_df, file.path(figDir, "all_records_proxies_unique.csv"))
-  }
-  
+  save(TS_all, file = paste0(datDir,"final_TS_",climateVar,".RData"))
   
   print("THE END")
   plots  <- list(a, t, tt)
