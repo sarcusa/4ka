@@ -13,6 +13,8 @@ Excursion_null <- function(data_in, param){
     #load(file.path(dataDir, paste0('EX_results', event_yr/1000, '.RData')))
     data_EX = filterTs(data_EX, 'statusEX == 1')
     
+    if(!length(data_EX) == 0){
+    
     for (i in 1:length(data_EX)) {
             
       #print(paste0('RECORD ', i))
@@ -42,19 +44,20 @@ Excursion_null <- function(data_in, param){
           next
         }
       }
-      registerDoParallel(cores = param$ncores)
+      #registerDoParallel(cores = param$ncores)
+      
+      registerDoParallel(cores = Sys.getenv("SLURM_CPUS_PER_TASK"))
+      
       #for (it in 1:param$numIt) {
       out <-foreach(it=1:param$numIt,
                     .verbose=F,.errorhandling = "pass") %dopar% { 
                       
                       #print(paste('Iteration', it))
                       
-                      #test_window = sample(x = seq(400,800,2),size = 1,                                           replace = F)
-                      
+                                         
                       results = EX_fun(data_EX[[i]]$age, synthDat[,it], 
                                        event_yr = event_yr, 
                                        event_window = param$event_window, 
-                                       #event_window = test_window,
                                        ref_window = param$ref_window)
                       
                       return(list(null_2 = results[[2]], null_3 = results[[3]]))
@@ -71,6 +74,13 @@ Excursion_null <- function(data_in, param){
     } # end loop thru records
     event_window = param$event_window
     save(data_EX, event_window, file = file.path(dataDir, paste0('EX_results_plusNull_complete_', event_yr/1000, '.RData')))
+    
+    }else{
+      print("no records")
+      event_window = param$event_window
+      save(event_window, file = file.path(dataDir, paste0('EX_results_plusNull_complete_', event_yr/1000, '.RData')))
+      
+    }
   }
   
   return(data_EX)
