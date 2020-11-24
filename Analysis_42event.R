@@ -61,6 +61,12 @@ for(i in 1:length(TS_EX_M)){
   TS_EX_M[[i]]$dirEx = dirChange[i]
   
 }
+dirs <- pullTsVariable(TS = TS_EX_M,variable = "dirEx")
+dirs[dirs == -1] = "negative"
+for(i in 1:length(TS_EX_M)){
+  TS_EX_M[[i]]$dirEx = dirs[i]
+}
+
 
 tidy.M <- tidyTs(TS_EX_M, age.var = "age")
 
@@ -70,7 +76,7 @@ df.M <- tidy.M %>%
   arrange(eventEX) %>%
   arrange(dirEx)
 
-all.M  <- plotTimeseriesStack(df.M, color.var = "eventEX", time.var = "age")+
+all.M  <- plotTimeseriesStack(df.M, color.var = "eventEX", time.var = "age",invert.var = "dirEx")+
   annotate(geom = "rect", colour = NA, fill = "yellow", xmin = 3900, xmax = 4500, ymin = 0, ymax = length(unique(df.M$dataSetName))+1,alpha = 0.2)+
   ggtitle("Moisture: Excursion")
   
