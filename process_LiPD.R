@@ -1,4 +1,4 @@
-processLiPD <- function(data_in, climInds){
+processLiPD <- function(data_in, climInds, detrend){
   
   for (i in 1:length(data_in)) {
     
@@ -12,6 +12,10 @@ processLiPD <- function(data_in, climInds){
       }
     } else {
       data_in[[i]]$climateInterpretation = FALSE
+      next
+    }
+   
+    if(is.null(data_in[[i]]$age)){
       next
     }
     
@@ -58,9 +62,10 @@ processLiPD <- function(data_in, climInds){
     age = age[inds]
     vals = vals[inds]
     
+    
     # Update TS with processed age and paleodata_in vectors
     data_in[[i]]$age = age
-    data_in[[i]]$paleoData_values = vals
+    data_in[[i]]$paleoData_values = vals 
     
     # Initialize flags for analysis - assume all records are being used, then filter
     # 1 = used in analysis, 0 = data_inset doesn't meet criteria for analysis
