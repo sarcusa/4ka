@@ -34,7 +34,7 @@ skipped_records  <- vector()
 #Manual
 list2env(loading("/projects/pd_lab/sha59/4ka/RData/BS_results_complete.RData"),envir=.GlobalEnv)
 
-for (i in 1901:1930) {
+for (i in 801:850) {
   print(paste0('RECORD ', i))
   
   TS_BS[[i]]$null_brk_pts = list()
@@ -61,7 +61,8 @@ for (i in 1901:1930) {
     }
   }
   
-  registerDoParallel(cores = param$ncores)
+  registerDoParallel(cores = Sys.getenv("SLURM_CPUS_PER_TASK"))
+  #registerDoParallel(cores = param$ncores)
   
   #cp  <- list()
   #cp.se <- list()
@@ -111,6 +112,6 @@ for (i in 1901:1930) {
   
 } #end of for loop
 
-fileName = file.path(mainDir, 'RData', 'BS_results_plusNull_26.RData')
+fileName = file.path(mainDir, 'RData', 'BS_results_plusNull_17.RData')
 save(TS_BS, file = fileName)
 write.table(skipped_records, file = file.path(mainDir,"skipped_records_BS.txt"))
