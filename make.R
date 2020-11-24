@@ -23,7 +23,7 @@ future::plan(batchtools_slurm, template = file.path(dir,"slurm_batchtools.tmpl")
 
 # Download necessary data
 #set.seed(1)
-external_data  = readLipd(file_in("http://lipdverse.org/HoloceneAbruptChange/0_9_0/HoloceneAbruptChange0_9_0.zip"))
+external_data  = readLipd(file_in("http://lipdverse.org/HoloceneAbruptChange/0_10_0/HoloceneAbruptChange0_10_0.zip"))
 print("data downloaded")
 #data_sub = list.sample(external_data, size = 50, replace = F)
 #print("subset done")
