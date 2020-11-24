@@ -133,7 +133,7 @@ iterativeBrokenStick <- function(age,values,useKinit=20,maxCP=6,confidence.level
   
   if(plot.opt){
     #x11()
-    png(filename = file.path(figDir, paste0(plotName, '_', event, '.png')))
+    pdf(file = file.path(figDir, paste0(plotName, '_', event, '.pdf')))
     plot(dati,xlab="Age (BP)",ylab = "Values")
     title(plotName)
     if(!no.cp){
