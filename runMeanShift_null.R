@@ -4,6 +4,9 @@ MeanShift_null <- function(data_in, param){
   
   data_MS <- data_in
   
+  #Manual
+  # load(file.path(dataDir, 'MeanShift.RData'))
+  
   for (i in 1:length(data_MS)) {
    
     
@@ -29,12 +32,14 @@ MeanShift_null <- function(data_in, param){
       }
     }
     
-    registerDoParallel(cores = param$ncores)
+    registerDoParallel(cores = Sys.getenv("SLURM_CPUS_PER_TASK"))
+    
+    #registerDoParallel(cores = param$ncores)
     # run the mean shift code for all iterations
-    #for (it in 1:numIt) {
+    
     out <-foreach(it=1:param$numIt,
                   .verbose=F,.errorhandling = "pass") %dopar% { 
-                    
+                    #for (it in 1:param$numIt) {             
                     #print(paste0('MS null ITERATION ', it))
                     
                     output = MS_fun(data_MS[[i]]$age, synthDat[,it], 
