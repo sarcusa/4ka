@@ -11,7 +11,7 @@ histEX_plot <- function(data_in,param, climateVar){
   negFill = ifelse(climateVar == 'M', '#bf812d', '#4393c3')
   quantCol = c('#fed976', '#fd8d3c', '#fc4e2a')
   
-  eventYrs = param$eventYrs
+  eventYrs = param$eventYrs[1:25]
   allEvents = data_in$allEvents
   allNullQuants = data_in$allNullQuants
   negEvents = data_in$negEvents
@@ -32,10 +32,10 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        #geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + 
@@ -45,11 +45,11 @@ histEX_plot <- function(data_in,param, climateVar){
         ggtitle(paste0('Excursion:\nAll events'))
       
       d  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                 fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
-                           breaks = eventYrs[seq(1,25,by=2)], 
-                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                  color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
+                        breaks = eventYrs[seq(1,25,by=2)], 
+                        labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
         theme_bw() + 
         theme(legend.position = "none")
@@ -70,9 +70,9 @@ histEX_plot <- function(data_in,param, climateVar){
     } else {
       
       b  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                 fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                 color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
                            breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
@@ -84,10 +84,10 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        #geom_point(aes(x = eventYrs, y = allNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = allNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +
@@ -97,10 +97,10 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+       # geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +
@@ -111,13 +111,13 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = negNullQuants[1,], color = '0.9')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[2,], color = '0.95')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[3,], color = '0.99')) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
         scale_color_manual(name = 'Quantile', values = c('0.9' = quantCol[1], 
                                                          '0.95' = quantCol[2], 
                                                          '0.99' = quantCol[3])) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5),
@@ -141,11 +141,11 @@ histEX_plot <- function(data_in,param, climateVar){
       ## NET HISTOGRAM
       
       b  <- ggplot()+ 
-        geom_col(aes(x = eventYrs, y = recordCounts[,2]),
-                 fill = 'grey60', color = 'grey10') +
-        scale_x_continuous(name = 'ky BP', 
-                           breaks = eventYrs[seq(1,25,by=2)], 
-                           labels = eventYrs[seq(1,25,by=2)]/1000) +
+        geom_line(aes(x = eventYrs, y = recordCounts[,2]),
+                  color = 'grey10') +
+        scale_x_reverse(name = 'ky BP', 
+                        breaks = eventYrs[seq(1,25,by=2)], 
+                        labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('# records') +
         theme_bw() + 
         theme(legend.position = "none")
@@ -154,22 +154,23 @@ histEX_plot <- function(data_in,param, climateVar){
       negDiff = diffEvents
       posDiff[diffEvents < 0] = 0
       negDiff[diffEvents > 0] = 0
+      
       p1 = ggplot() + 
         geom_col(aes(x = eventYrs, y = posDiff), fill = posCol) +
         geom_col(aes(x = eventYrs, y = negDiff), fill = negCol) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[3,]), color = quantCol[3]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        #geom_point(aes(x = eventYrs, y = diffNullQuants[4,]), color = quantCol[1]) +
+       # geom_point(aes(x = eventYrs, y = diffNullQuants[5,]), color = quantCol[2]) +
+       # geom_point(aes(x = eventYrs, y = diffNullQuants[6,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +
@@ -179,10 +180,10 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
         geom_line(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        #geom_point(aes(x = eventYrs, y = posNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = posNullQuants[3,]), color = quantCol[3]) +
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +
@@ -192,14 +193,14 @@ histEX_plot <- function(data_in,param, climateVar){
         geom_line(aes(x = eventYrs, y = negNullQuants[1,], color = '0.1')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[2,], color = '0.05')) +
         geom_line(aes(x = eventYrs, y = negNullQuants[3,], color = '0.01')) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
-        geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[1,]), color = quantCol[1]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[2,]), color = quantCol[2]) +
+        #geom_point(aes(x = eventYrs, y = negNullQuants[3,]), color = quantCol[3]) +
         scale_color_manual(name = 'Signficance level', 
                            values = c('0.1' = quantCol[1], 
                                       '0.05' = quantCol[2], '0.01' = quantCol[3]),
                            breaks = c('0.1', '0.05', '0.01')) +
-        scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
+        scale_x_reverse(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                            labels = eventYrs[seq(1,25,by=2)]/1000) +
         ylab('Fraction of events') +
         theme_bw() + 
