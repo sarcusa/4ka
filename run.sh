@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=3000:00
+#SBATCH --time=400:00 ##was 3000, then 1000
 #SBATCH --mem=64000
 #SBATCH --mail-type=ALL
 
