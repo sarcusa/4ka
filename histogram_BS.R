@@ -5,6 +5,8 @@ hist_BS <- function(data_in, param, climateVar){
   figDir = file.path(createPaths(), 'histograms')
   datDir = file.path(createPaths(), 'RData')
   
+  param$eventYrs = param$eventYrs[1:25]
+  
   allNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   posNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   negNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
