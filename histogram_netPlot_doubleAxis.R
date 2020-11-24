@@ -42,21 +42,21 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_T_EX[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_EX[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_EX[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_T_EX[4,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_EX[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_EX[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_EX[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_EX[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = '', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') + #ylab('Excursion:\nFraction of events') +
@@ -78,21 +78,21 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_M_EX[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_EX[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_EX[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_M_EX[4,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_EX[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_EX[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_EX[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_EX[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = '', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') +
@@ -114,21 +114,21 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_T_MS[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_MS[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_MS[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_T_MS[4,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_MS[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_MS[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_MS[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_MS[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = '', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') + #ylab('Regime change:\nFraction of events') +
@@ -147,21 +147,21 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_M_MS[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_MS[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_MS[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_M_MS[4,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_MS[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_MS[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_MS[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_MS[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = '', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') +
@@ -181,21 +181,21 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_T_BS[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_BS[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_BS[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_T_BS[4,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_T_BS[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_T_BS[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_T_BS[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_T_BS[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') + #ylab('Trend change:\nFraction of events') +
@@ -214,22 +214,22 @@ histogram_net  <- function(EX, MS, BS, param){
     geom_line(aes(x = eventYrs, y = quants_M_BS[1,]), color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_BS[2,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_BS[3,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[1,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[2,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[3,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[1,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[2,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[3,]), 
+    #           color = quantCol[3]) +
     geom_line(aes(x = eventYrs, y = quants_M_BS[4,]), 
               color = quantCol[1]) +
     geom_line(aes(x = eventYrs, y = quants_M_BS[5,]), color = quantCol[2]) +
     geom_line(aes(x = eventYrs, y = quants_M_BS[6,]), color = quantCol[3]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[4,]), 
-               color = quantCol[1]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[5,]), 
-               color = quantCol[2]) +
-    geom_point(aes(x = eventYrs, y = quants_M_BS[6,]), 
-               color = quantCol[3]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[4,]), 
+    #           color = quantCol[1]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[5,]), 
+    #           color = quantCol[2]) +
+    #geom_point(aes(x = eventYrs, y = quants_M_BS[6,]), 
+    #           color = quantCol[3]) +
     scale_x_continuous(name = 'ky BP', breaks = eventYrs[seq(1,25,by=2)], 
                        labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('') +
