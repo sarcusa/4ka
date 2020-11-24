@@ -4,7 +4,7 @@
 #SBATCH --output=<%= log.file %>
 #SBATCH --error=<%= log.file %>
 ##SBATCH --ntasks=1 
-#SBATCH --time=4000:00
+#SBATCH --time=3000:00
 #SBATCH --mem=64000
 #SBATCH --cpus-per-task=<%= resources[["cores"]] %>
 ##SBATCH --cpus-per-task=2
