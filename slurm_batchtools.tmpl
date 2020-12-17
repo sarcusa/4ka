@@ -9,5 +9,6 @@
 #SBATCH --cpus-per-task=<%= resources[["cores"]] %>
 ##SBATCH --cpus-per-task=2
 ##SBATCH -n 64
+##SBATCH --partition=el6
 
 Rscript -e 'batchtools::doJobCollection("<%= uri %>")'
