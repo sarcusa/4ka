@@ -1,7 +1,7 @@
 Excursion <- function(input_data,input_param, input_var){
   
-  analysis_1c = spatialExcursion_null(data_in = input_data, 
-                                      param = input_param, climateVar = input_var)
+  #analysis_1c = spatialExcursion_null(data_in = input_data, 
+  #                                    param = input_param, climateVar = input_var)
   
   analysis_1d = histEX(data_in = input_data, param = input_param, 
                        climateVar = input_var)
