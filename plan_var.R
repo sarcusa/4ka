@@ -23,7 +23,14 @@ my_plan <- drake_plan(
   #                       input_var = climate_var),
   #                    transform = cross(
   #                      climate_var = c("T","M")),
-  #                   resources = list(cores = 8)) #was 16
+  #                   resources = list(cores = 8)), # was 16
+  
+  #analysis_1c = target(spatialExcursion_null(data_in = prep_1,
+  #                                           param = parameters,
+  #                               climateVar = climate_var),
+  #                     transform = cross(
+  #                       climate_var = c("T","M")),
+  #                     resources = list(cores = 8))
   #,
   
   prep_2 = target(MeanShift_prep(input_data = data,input_param = parameters),
@@ -32,9 +39,14 @@ my_plan <- drake_plan(
   analysis_2 = target(MeanShift(input_data = prep_2, input_param = parameters,
                          input_var = climate_var),
                       transform = cross(climate_var = c("T","M")),
-                      resources = list(cores = 8)) #was 32
-  #,
+                      resources = list(cores = 8),
+                      seed = 2),
   
+  analysis_2c = target(spatialMeanShift_null(data_in = prep_2, param = parameters,
+                                             climateVar = climate_var),
+                       transform = cross(climate_var = c("T","M")),
+                       resources = list(cores = 8))
+  #,
   #prep_3a = target(TrendChanges_prep1(input_data = data,input_param = parameters),
   #                resources = list(cores = 16))
   #,
