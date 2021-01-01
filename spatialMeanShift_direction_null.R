@@ -1,5 +1,6 @@
 spatialMeanShift_null <- function(data_in, param, climateVar){
   
+  datDir = file.path(createPaths(), 'RData')
   msDir = file.path(createPaths(), 'mean_shift')
   dir.create(file.path(msDir, 'spatial_MS_M'))
   dir.create(file.path(msDir, 'spatial_MS_T'))
@@ -7,8 +8,8 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
   TS_MS_orig = data_in
   
   # Manual
-  #load("/projects/pd_lab/sha59/4ka/RData/MS_results_plusNull_complete.RData")
-  #TS_MS_orig = analysis_2b
+  #load("/projects/pd_lab/sha59/4ka/Signif_test_MS_99_1250/RData/MS_results_plusNull_complete.RData")
+  #TS_MS_orig = data_MS
   
   for (y in 1:length(param$eventYrs)) {
     
@@ -97,9 +98,7 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
       if (length(nullBreaks) > 0) {
         for (j in 1:param$numIt) {
           
-                   
-          
-          eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow & nullBreaks[[j]] <= eventYr + param$eventWindow)
+         eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow & nullBreaks[[j]] <= eventYr + param$eventWindow)
           
           if (length(eventInd) > 0) {
             totNullEvents[i,j] = nullDirs[[j]][eventInd[1]] * dirs[i]
@@ -144,6 +143,12 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
       
     } # end location grid loops
     
+    OP <- list(gridNumRecs,gridEvents,gridNullEvents, 
+               dirChange, indsLoc,totNullEvents,allTsLon, allTsLat)
+    save(OP, file = paste0(datDir, "/results_spatial_MS_", 
+                    climateVar, "_", eventYr/1000, ".RData") )
+ #} #for manual
+  
     # pull out non NA values
     locs = which(!is.na(gridEvents), arr.ind = T)
     locs_na = which(is.na(gridEvents), arr.ind = T)
@@ -189,7 +194,7 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
         geom_point(aes(x = allTsLon[which(dirChange == -1)], y = allTsLat[which(dirChange == -1)], color='- event'), size = 3, shape = 25, fill = "tomato4") +
         scale_color_manual(name = '', values = c('no event' = 'black', '+ event' = 'white', '- event' = 'white'),breaks = c('+ event', '- event', 'no event'),guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('blue','tomato4','grey50'),color = c('black','black','black')))) +
         scale_fill_manual(name = '', values = rev(myCol))+
-        ggtitle(paste0('MS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$eventWindow/2/1000, 'ka events'))+
+        ggtitle(paste0('MS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$eventWindow/2/1000, 'ka events'))
         #geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")     
       
       pdf(file.path(msDir, 'spatial_MS_M', 
@@ -216,7 +221,7 @@ spatialMeanShift_null <- function(data_in, param, climateVar){
                            breaks = c('+ event', '- event', 'no event'),
                            guide = guide_legend(override.aes = list(shape = c(24, 25, 21), fill = c('red','royalblue','grey50'),color = c('black','black','black')))) +
         scale_fill_manual(name = '', values = myCol) +
-        ggtitle(paste0('MS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$eventWindow/2/1000, 'ka events'))+
+        ggtitle(paste0('MS: Fraction of null events < real event #\n', eventYr/1000,'+/-',param$eventWindow/2/1000, 'ka events'))
         #geom_rect(aes(xmax=180.1,xmin=-180.1,ymax=90.1,ymin=-90.1),fill=NA, colour="black")
       
       pdf(file.path(msDir, 'spatial_MS_T', 
