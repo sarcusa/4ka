@@ -10,14 +10,14 @@ MeanShift_null <- function(data_in, param){
   for (i in 1:length(data_MS)) {
    
     
-    #print(paste0('RECORD ', i))
+    print(paste0('RECORD ', i))
     
     data_MS[[i]]$null_sig_brks = list()
     data_MS[[i]]$null_brk_dirs = list()
     
     synthDat = try(createSyntheticTimeseries(time = data_MS[[i]]$age, 
                                     values = data_MS[[i]]$paleoData_values, 
-                                             n.ens = param$numIt), silent = T)
+                                             n.ens = param$numIt), silent = F)
     
     if (class(synthDat) == "try-error") {
       print(paste('Try error, running instead with method = ML'))
@@ -49,8 +49,8 @@ MeanShift_null <- function(data_in, param){
                   }
     stopImplicitCluster()
     
-      #data_MS[[i]]$null_sig_brks[[it]] = output$sig_brks
-      #data_MS[[i]]$null_brk_dirs[[it]] = output$brk_dirs
+    #  data_MS[[i]]$null_sig_brks[[it]] = output$sig_brks
+    #  data_MS[[i]]$null_brk_dirs[[it]] = output$brk_dirs
     data_MS[[i]]$null_sig_brks = lapply(out, `[[`, 1)
     data_MS[[i]]$null_brk_dirs = lapply(out, `[[`, 2)
     
