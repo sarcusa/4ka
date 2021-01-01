@@ -21,13 +21,18 @@ histogram_MS <- function(data_in, param, climateVar){
   
   if (eventDetector == 'MS') {
     #load(file.path(datDir, 'MS_results_plusNull_complete.RData'))
-    #TS_MS_orig = analysis_2b
+    #TS_MS_orig = data_MS
     TS_MS_orig = data_in
   } else {
     # broken stick
     #load(file.path(datDir, 'BS_results_plusNull_complete.RData'))
     TS_BS_orig = data_in
   }
+  
+  #THese are for the composite
+  everyEvent <- list()
+  everyDirChange <- list()
+  everyTotNullEvent <- list()
   
   for (y in 1:length(param$eventYrs)) {
     
@@ -177,6 +182,8 @@ histogram_MS <- function(data_in, param, climateVar){
     event_by_site_df = data.frame(TVerseID = TSid, Dataset = names, Site = SiteName, Lat = lat, Lon = lon, Event = dirChange,Year = rep(eventYr, length(names)), Var = rep(climateVar, length(names)), Archive = ArchiveType, Proxy = ProxyType, OriginalURL = Original, DOI = doi)
     write.table(event_by_site_df, file = file.path(datDir, paste0('event_each_site_MS_',climateVar,'.csv')), append = T,row.names = F, col.names = F, sep = ',')
     
+    everyEvent[[y]] <- events
+    everyDirChange[[y]] <- dirChange
       
     # store real events summary for the year
     allEvents[y] = sum(events == 1) / length(events)
@@ -198,7 +205,7 @@ histogram_MS <- function(data_in, param, climateVar){
       
       for (j in 1:param$numIt) {
         
-        #sensitivity testing
+        #sensitivity testing: added so code will not break when no event is found
                 
         eventInd = which(nullBreaks[[j]] >= eventYr - param$eventWindow  & nullBreaks[[j]] <= eventYr + param$eventWindow )
         
@@ -222,6 +229,8 @@ histogram_MS <- function(data_in, param, climateVar){
     posNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == 1)) / length(inds)
     negNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == -1)) / length(inds)
     
+    everyTotNullEvent[[y]] <- totNullEvents
+    
   } # end event year loop
   
   allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
@@ -230,10 +239,15 @@ histogram_MS <- function(data_in, param, climateVar){
   diffNullQuants = apply(posNullEvents - negNullEvents, 1, function(x) quantile(x, probs = c(0.1,0.05,0.01,0.9, 0.95, 0.99)))
   
   output <- list(
+    everyEvent = everyEvent,
+    everyDirChange = everyDirChange,
+    events = events,
+    dirChange = dirChange,
     allEvents = allEvents,
     posEvents = posEvents,
     negEvents = negEvents,
     diffEvents = diffEvents,
+    everyTotNullEvent = everyTotNullEvent,
     recordCounts = recordCounts,
     allNullEvents = allNullEvents,
     posNullEvents = posNullEvents,
@@ -242,6 +256,8 @@ histogram_MS <- function(data_in, param, climateVar){
     posNullQuants = posNullQuants,
     negNullQuants = negNullQuants,
     diffNullQuants = diffNullQuants)
+  
+  save(output, file = file.path(datDir, paste0('results_',climateVar,'_MS.RData')))
   
   return(output)
   
