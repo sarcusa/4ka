@@ -7,7 +7,7 @@ histEX <- function(data_in, param, climateVar){
   allNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   posNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   negNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
-  diffNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
+  #diffNullEvents = matrix(NA, nrow = length(param$eventYrs), ncol = param$numIt)
   allEvents = rep(NA, length(param$eventYrs))
   posEvents = rep(NA, length(param$eventYrs))
   negEvents = rep(NA, length(param$eventYrs))
@@ -16,9 +16,14 @@ histEX <- function(data_in, param, climateVar){
   recordCounts = matrix(NA, nrow = length(param$eventYrs), ncol = 4) # years, all records, + events, - events
   recordCounts[,1] = param$eventYrs
   
+  #these are for the composite
+  everyEvent <- list()
+  everyDirChange <- list()
+  everyTotNullEvent <- list()
+  
   for (y in 1:length(param$eventYrs)) {
     
-    #remove(data_EX)
+    remove(data_EX)
     eventYr = param$eventYrs[y]
     print(paste('Year:', eventYr))
     
@@ -85,6 +90,9 @@ histEX <- function(data_in, param, climateVar){
     dirEvents = unlist(sapply(TS,"[[","dirEx"))[inds]  #(0, 1, -1):(no, positive, negative) event
     dirChange = dirs * dirEvents  #(0, 1, -1):(no, positive, negative) climate event
     
+    everyEvent[[y]] <- events
+    everyDirChange[[y]] <- dirChange
+    
     # save table of results by site
     event_by_site_df = data.frame(TVerseID = TSid, Dataset = names, Site = SiteName, Lat = lat, Lon = lon, Event = dirChange,Year = rep(eventYr, length(names)), Var = rep(climateVar, length(names)), Archive = ArchiveType, Proxy = ProxyType, OriginalURL = Original, DOI = doi)
     write.table(event_by_site_df, file = file.path(dataDir, paste0('event_each_site_EX_',climateVar,'.csv')), append = T,row.names = F, col.names = F, sep = ',')
@@ -100,7 +108,7 @@ histEX <- function(data_in, param, climateVar){
     totNullEvents = matrix(0, nrow = length(inds), ncol = param$numIt) 
     for (i in 1:length(inds)) {
       
-      if(!length(TS[[inds[i]]]$null_events_dir) == param$numIt){
+      if(length(TS[[inds[i]]]$null_events_dir) != param$numIt){
         
         add_NA <- rep(NA,param$numIt - length(TS[[inds[i]]]$null_events_dir))
         TS[[inds[i]]]$null_events_dir  <- c(TS[[inds[i]]]$null_events_dir,add_NA)
@@ -116,43 +124,60 @@ histEX <- function(data_in, param, climateVar){
     negNullEvents[y,] = apply(totNullEvents, 2, function(x) sum(x == -1)) / length(inds)
     
     } else {
-      
+      #added so code will not break when no event is found
       print(paste0("no ",climateVar, " variable found"))
-      allNullEvents[y,] = NA
-      posNullEvents[y,] = NA
-      negNullEvents[y,] = NA 
+      allEvents[y] = 0
+      posEvents[y] = 0
+      negEvents[y] = 0
+      diffEvents[y] = posEvents[y] - negEvents[y]
+      allNullEvents[y,] = 0
+      posNullEvents[y,] = 0
+      negNullEvents[y,] = 0 
+      recordCounts[y,2:4] = c(0, 0, 0)
     }# end of second ifelse
     
       
     }else{
       
-      
-      allNullEvents[y,] = NA
-      posNullEvents[y,] = NA
-      negNullEvents[y,] = NA
+      allEvents[y] = 0
+      posEvents[y] = 0
+      negEvents[y] = 0
+      diffEvents[y] = posEvents[y] - negEvents[y]
+      allNullEvents[y,] = 0
+      posNullEvents[y,] = 0
+      negNullEvents[y,] = 0
+      recordCounts[y,2:4] = c(0, 0, 0)
       
     } # end of first ifelse 
       
-   
+   everyTotNullEvent[[y]] <- totNullEvents
 
     
   } # end event year loop
    
-  allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99),na.rm = T))
-  posNullQuants = apply(posNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99), na.rm = T))
-  negNullQuants = apply(negNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99),na.rm = T))
-  diffNullQuants = apply(posNullEvents - negNullEvents, 1, function(x) quantile(x, probs = c(0.1, 0.05, 0.01, 0.9, 0.95, 0.99),na.rm = T))
+  allNullQuants = apply(allNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
+  posNullQuants = apply(posNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
+  negNullQuants = apply(negNullEvents, 1, function(x) quantile(x, probs = c(0.9, 0.95, 0.99)))
+  diffNullQuants = apply(posNullEvents - negNullEvents, 1, function(x) quantile(x, probs = c(0.1, 0.05, 0.01, 0.9, 0.95, 0.99)))
   
   output <- list(
+    everyEvent = everyEvent,
+    everyDirChange = everyDirChange,
     allEvents = allEvents,
     posEvents = posEvents,
     negEvents = negEvents,
     diffEvents = diffEvents,
+    everyTotNullEvent = everyTotNullEvent,
+    allNullEvents = allNullEvents,
+    posNullEvents = posNullEvents,
+    negNullEvents = negNullEvents,
     recordCounts = recordCounts,
     allNullQuants = allNullQuants,
     posNullQuants = posNullQuants,
     negNullQuants = negNullQuants, 
     diffNullQuants = diffNullQuants)
+  
+  save(output, file = file.path(dataDir, paste0('results_',climateVar,'_EX.RData')))
   
   return(output)
 }
