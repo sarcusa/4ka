@@ -99,7 +99,7 @@ compositeHist <- function(dat, param, climateVar, detector){
     Rec <- sapply(dat, function(x) x$recordCounts[j,2])
     
     # store real events summary for the year
-    allEvents[j] = sum(events == 1) / length(events)
+    allEvents[j] = sum(events != 0) / length(events)
     posEvents[j] = sum(dirChange == 1) / length(events)
     negEvents[j] = sum(dirChange == -1) / length(events)
     diffEvents[j] = posEvents[j] - negEvents[j]
@@ -108,12 +108,10 @@ compositeHist <- function(dat, param, climateVar, detector){
     recordCounts[j,2:ncol(recordCounts)] = c(Rec, posEvents[j], negEvents[j])
     
     allNullEvents[j,] = apply(totNullEvents, 2, function(x) sum(x != 0)) / nrow(totNullEvents)
-      posNullEvents[j,] = apply(totNullEvents, 2, function(x) sum(x == 1))  / nrow(totNullEvents)
-      
-      #sum(sapply(totNullEvents, function(x) nrow(x))) used to be this
+    posNullEvents[j,] = apply(totNullEvents, 2, function(x) sum(x == 1))  / nrow(totNullEvents)
+    #sum(sapply(totNullEvents, function(x) nrow(x))) used to be this
     negNullEvents[j,] = apply(totNullEvents, 2, function(x) sum(x == -1)) / nrow(totNullEvents)
-      
-      #sum(sapply(totNullEvents, function(x) nrow(x)))
+    #sum(sapply(totNullEvents, function(x) nrow(x)))
     
   } #end of year loop
   
@@ -175,7 +173,9 @@ compositeHist <- function(dat, param, climateVar, detector){
   
 }
 
-{
+OriginalCompositeHist <- function(dat, param, climateVar, detector, cal){
+  
+  figDir = file.path(dir, 'histograms')
   
   DE_all <- sapply(dat,"[[","diffEvents")
   PNE_all <- sapply(dat, "[[", "posNullEvents")
@@ -292,15 +292,28 @@ compositeHist <- function(dat, param, climateVar, detector){
   negFill = ifelse(climateVar == 'M', '#bf812d', '#4393c3')
   quantCol = c('#fed976', '#fd8d3c', '#fc4e2a')
   
-  record_num_plot  <- ggplot()+ 
-    geom_line(aes(x = eventYrs, y = recordCounts),
-              color = 'grey10') +
+  recordCounts_all <- as.data.frame(recordCounts_all)
+  recordCounts_all <- cbind(eventYrs,recordCounts_all)
+  m <- reshape2::melt(recordCounts_all[,1:(length(dat)+1)], "eventYrs")
+  
+  record_num_plot  <- ggplot(m, aes(x = eventYrs, y = value, group = variable))+ 
+    geom_line() +
     scale_x_reverse(name = 'ky BP', 
                     breaks = eventYrs[seq(1,25,by=2)], 
                     labels = eventYrs[seq(1,25,by=2)]/1000) +
     ylab('# records') +
     theme_bw() + 
-    theme(legend.position = "none")
+    theme(legend.position = "none")  
+  
+  #record_num_plot  <- ggplot()+ 
+  #  geom_line(aes(x = eventYrs, y = recordCounts),
+  #            color = 'grey10') +
+  #  scale_x_reverse(name = 'ky BP', 
+  #                  breaks = eventYrs[seq(1,25,by=2)], 
+  #                  labels = eventYrs[seq(1,25,by=2)]/1000) +
+  #  ylab('# records') +
+  #  theme_bw() + 
+  #  theme(legend.position = "none")
   
   netHist = ggplot() +
     geom_col(aes(x = eventYrs, y = posDiff), fill = posCol) +
@@ -325,7 +338,7 @@ compositeHist <- function(dat, param, climateVar, detector){
   grid.draw(together)
   dev.off()    
     
-  out <- list(PosDiff = posDiff, NegDiff = negDiff, DNQ = DNQ, Sig = sig, Tot = tot)
+  out <- list(PosDiff = posDiff, NegDiff = negDiff, DNQ = DNQ, Sig = sig, Tot = tot, recordCounts_all)
   return(out)
 }
 
@@ -521,6 +534,9 @@ for(i in 1:length(seldirsMS)){
 MS_results_T <- compositeHist(dat = MS_T, param = param, climateVar = "T", detector = "MS")
 MS_results_M <- compositeHist(dat = MS_M, param = param, climateVar = "M", detector = "MS")
 
+MS_results_T_ori <- OriginalCompositeHist(dat = MS_T, param = param, climateVar = "T", detector = "MS", cal = "median")
+MS_results_M_ori <- OriginalCompositeHist(dat = MS_M, param = param, climateVar = "M", detector = "MS", cal = "median")
+
 # Spatial maps 
 
 GridCreate(D = seldirsMS[1], param = param, climateVar = "M")
@@ -539,6 +555,9 @@ for(i in 1:length(seldirsEX)){
 
 EX_results_T <- compositeHist(dat = EX_T, param = param, climateVar = "T", detector = "EX")
 EX_results_M <- compositeHist(dat = EX_M, param = param, climateVar = "M",  detector = "EX")
+
+EX_results_T_ori <- OriginalCompositeHist(dat = EX_T, param = param, climateVar = "T", detector = "EX", cal = "median")
+EX_results_M_ori <- OriginalCompositeHist(dat = EX_M, param = param, climateVar = "M", detector = "EX", cal = "median")
 
 # Write results out
 
